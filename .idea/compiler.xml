@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="gc-admin" />
+        <module name="gc-common" />
+        <module name="gc-quartz" />
+        <module name="gc-framework" />
+        <module name="gc-system" />
+        <module name="gc-generator" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="gc" target="1.8" />
+      <module name="gc-admin" target="1.8" />
+      <module name="gc-common" target="1.8" />
+      <module name="gc-framework" target="1.8" />
+      <module name="gc-generator" target="1.8" />
+      <module name="gc-quartz" target="1.8" />
+      <module name="gc-system" target="1.8" />
+      <module name="ruoyi" target="1.8" />
+      <module name="ruoyi-admin" target="1.8" />
+      <module name="ruoyi-common" target="1.8" />
+      <module name="ruoyi-framework" target="1.8" />
+      <module name="ruoyi-generator" target="1.8" />
+      <module name="ruoyi-quartz" target="1.8" />
+      <module name="ruoyi-system" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

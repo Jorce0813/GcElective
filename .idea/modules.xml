@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/gc.iml" filepath="$PROJECT_DIR$/gc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/gc-admin/gc-admin.iml" filepath="$PROJECT_DIR$/gc-admin/gc-admin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/gc-common/gc-common.iml" filepath="$PROJECT_DIR$/gc-common/gc-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/gc-framework/gc-framework.iml" filepath="$PROJECT_DIR$/gc-framework/gc-framework.iml" />
+      <module fileurl="file://$PROJECT_DIR$/gc-generator/gc-generator.iml" filepath="$PROJECT_DIR$/gc-generator/gc-generator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/gc-quartz/gc-quartz.iml" filepath="$PROJECT_DIR$/gc-quartz/gc-quartz.iml" />
+      <module fileurl="file://$PROJECT_DIR$/gc-system/gc-system.iml" filepath="$PROJECT_DIR$/gc-system/gc-system.iml" />
+    </modules>
+  </component>
+</project>

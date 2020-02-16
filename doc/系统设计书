@@ -1,0 +1,132 @@
+
+
+一. 系统界面设计
+
+    用户个人信息/头像==
+	
+
+	管理中心 <
+
+		用户管理 >
+
+		课程管理 >
+
+		选课管理 >
+
+		通知公告 >
+
+
+
+	学生中心 <
+
+		选课入口 >
+					课程类型  |  课程名称  |  上课时间  |  课程老师  |   -->    搜索 | 重置
+				--------------------------------------------------------------------------------
+				课程序号 | 课程名称 | 课程老师 | 上课时间&地点 | 课程学分 | 课堂人数 | 已选人数 |   操作
+																								  选课/已选【alert】
+
+				第 x 到 x 条，共 x 条记录											   上一页 | 下一页 | 跳转到 |
+
+
+		我的课表 >
+				     ---------------------------------
+					|  学分上限  |  已选学分  | 备注  |
+					 ---------------------------------
+					|            |            |       |
+					 ---------------------------------
+
+					            星期一  |  星期二  |  星期三  |  星期四  |  星期五
+					1-2节
+					8:40~10:40
+					.
+					.
+					---------------------------------------------------------------
+					备注: 【点击对应的tab可以对已选课程进行操作【退选】】
+					---------------------------------------------------------------
+
+		我的学分 > 【模仿 <菜单管理> 模块 + <小广财>】
+
+
+		通知公告 > 
+
+
+
+
+二. 数据库设计【----------------切记在查询列建立索引index---------------------】
+
+	1. user【偏向于student, 注意teacher】  							2. institue【学院】
+		user_id, bigint(20), primary key, 用户ID						inst_id, bigint(20), primary key, 学院ID
+		inst_id, bigint(20), 学院ID										inst_name, varchar(20)
+		login_name, varchar(30), 登录名称-16251104235					crete_time, datetime			 
+		user_name, varchar(30), 用户名
+		user_type, varchar(2), 用户type-管理员/普通用户
+		email, varchar(50), 邮箱
+		phone, varchar(11), 电话号码
+		sex, char(1), 性别
+		avatar, varchar(100), 头像fileId
+		password, varchar(50), 密码的加密字符串
+		salt, varchar(50), 盐值
+		status, int, 用户状态-"0=正常,1=停用"
+		del_flag, int, 删除标志-0代表存在 2代表删除
+		login_ip, varchar(16), 最后登录IP
+		login_date, datetime, 最后登录时间
+		crete_time, datetime, 创建时间
+
+	3. course
+		course_id, bigint(20), primary key
+		course_name, varchar(50)
+		course_type, varchar(50)
+		course_credit, int, 课程学分
+		course_hours, int, 课程学时
+
+	4. teacher
+		t_id, bigint(20), primary key
+		t_name, varchar(50)
+		inst_id, bigint(20)
+		t_sex, char(1)
+		t_phone, varchar(11)
+		t_email, varchar(50)
+		t_education, varchar(20), 学历
+		t_position, varchar(50), 职位
+
+	5. schedule[排课表]
+		sche_id, bigint(20), primary key, 排课ID
+		teacher_id, bigint(20)
+		course_id, bigint(20)
+	   【
+		  :: >>解决冲突事件, 时间+地点关联在一起
+		  tech_time, varchar(10), 上课时间[格式: w1-s2, 代表周一第3-4节的课. w=week, s=section]
+		  tech_location, varchar(30), 上课地点[2-508: 第二教学楼508课室]
+		】
+		tech_time, varchar(100), Json数据格式=>>[
+												  "w1s2":"1,2,3,4,5,6,7,8,14,15,16" ,
+												  "w4s3":"1,14,15,16"
+												]
+		tech_location, varchar(100), Json数据格式=>>[
+													  "w1s2":"2-506" ,
+													  "w4s3":"3-207"
+													]
+		class_size, int, 课堂人数
+		selected_size, int, 已选人数
+		create_time, datatime
+		note==>>【在读出判断冲突的时候再处理, 降低数据库更新压力】
+
+
+	6. 已选课表【分库分表-按学院分,selected course】
+		sc_xx: 信息学院
+		sc_gjs: 国际商学院
+		... ...
+		user_id, bigint(20)
+		sche_id, bigint(20)
+		create_time, datetime, 创建时间
+
+		PRIMARY KEY(user_id,sche_id) ;
+
+三. 待完善
+	1. 数据库索引未加
+	2. 数据库对应的实体类的属性注解未加
+
+
+
+
+

@@ -1,0 +1,52 @@
+	
+	一. 时间进度规划 【开发周期: 2.10开始, 2月底-3月初开发完成】
+		1. 需求分析
+		2. 选课模块-界面设计-内部模块设计
+		3. 其他模块-界面设计-内部模块设计
+		4. 数据库设计
+		5. 选课模块-系统开发-接入高并发module
+		   5-1. 项目目录整改
+
+		6. 其他模块-系统开发-【注: 登录系统的高并发处理】
+		7. 系统测试
+		8. 论文编写
+
+	    IDEA-licensed: http://jetbrains-license-server
+
+	二. 开发日报
+
+	> 2020-02-10
+	  1. 确定系统模块, 管理中心 + 学生中心
+	  2. 设计选课系统界面
+	  3. 设计数据库表
+
+	> 2020-02-12
+	  1. 设计数据库
+	  2. 处理, 设计数据库中选课冲突的逻辑
+
+	> 2020-02-13
+	  1. 编写数据库建表sql: gc.sql
+	  2. 数据库索引未加
+	  3. 在Navicat中运行gc.sql出现问题, 但在cmd中操作正常
+
+	> 2020-02-14
+	  1. 根据 [http://doc.ruoyi.vip/ruoyi/other/faq.html#如何更换项目包路径] 更换项目的包路径,
+	     更换后项目能正常启动并访问.
+	  2. 在 [1] 之后, 进入项目index发现【左侧导航栏】的【实例访问】没显示, 排查后更改关联 [demoEnabled]
+	     字段的文件 application.yml-> ruoyi : demoEnabled 改为-> gc : demoEnabled
+	  3. 进入Project Structrue-> Modules, 更改module的命名时:
+	     >> 先[-]先前的module, 再[+]-> [Import Module]-> ...
+	     >> 当[+]-> [gc-admin]时最后一步出现[project is ignored. See File ...]:
+	     	>> File-> Settings-> 搜索[Maven]-> [Ignored Files]-> 取消被ignored的pom.xml
+	     	>> 出现项目内所有的pom.xml定义的依赖失效
+	     	>> 回到项目-> 右击pom.xml-> Maven-> Reimport, 问题解决
+	     >> 注意Root项目也要[+]为module, 否则项目失效
+	  4. Root项目不可以直接Rename, 更改包路径时注意包之间的关联, IDEA中会一起rename掉
+
+
+	> 2020-02-15
+	  1. 根据数据库表新建Java实体类
+
+	> 2020-02-16
+
+	

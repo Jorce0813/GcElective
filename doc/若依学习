@@ -1,0 +1,82 @@
+
+	待办: 
+		1. SpringBoot中怎么配置访问前端页面 ？
+			>> 1) 默认首页的设置，当输入域名是可以自动跳转到默认指定的网页
+				  >> server:
+					  # 服务器的HTTP端口，默认为80
+					  port: 8080
+					  servlet:
+					    # 应用的访问路径
+					    context-path: /
+				  >> @Configuration
+					  public class ResourcesConfig implements WebMvcConfigurer
+					  {
+					   ... ...
+				       registry.addViewController("/").setViewName("forward:" + indexUrl);
+
+		    >> 2) 怎么从html的$.ajax()访问的URL映射到 @Controller的Mapping() :
+		    	  >> https://blog.csdn.net/ZZ2713634772/article/details/87003903
+		    	  >> spring.thymeleaf.prefix=classpath:/templates/      
+		    	     指明 thymeleaf 查找view 资源的根目录。 默认是 /templates/ 目录 !!!
+		    	  >> spring.thymeleaf.suffix=.html  　
+		    	     指明 thymeleaf  查找view 资源时候使用的 后缀。 默认是 html 文件 !!!
+
+
+		2. 弹出alert()函数
+
+		3. 在PostMapping("/login")中shrio框架验证登录信息的流程？
+
+		4. ModelMap ModeAndView
+
+		5. Java 中的 1L == 1 Long ？
+
+		6. mybatis的@Param注解，什么时候要用？
+			>> https://blog.csdn.net/qq_39505065/article/details/90550705
+
+		7. mybatis扫描的文件包package的配置在哪里 ？
+			>> 无需在***.xml文件中配置，通过注解的方式
+			>> @MapperScan("com.gc.**.mapper")
+
+		8. mybatis配置数据库连接的配置
+			>> MyBatisConfig.java && sqlSessionFactory方法 --> 
+			   DruidConfig.java && dataSource方法 --> 
+			   DruidProperties.java
+
+		9. @Bean, @Value, @Primary, @MapperScan
+			>> @Bean: https://www.cnblogs.com/javazhiyin/p/11175068.html
+			>> @Value: https://blog.csdn.net/hunan961/article/details/79206291
+			>> @MapperScan: https://blog.csdn.net/manchengpiaoxue/article/details/84937257
+
+		10. Long在Java跟数据库中的涵义
+
+		11. char 跟 varchar
+
+		12. auto_increment, 
+			int 跟 usigned int的区别, 
+			加不加ID的问题
+			default '' 跟 default null的区别
+			通常情况下需不需要建立外键：https://blog.csdn.net/metheir/article/details/81877055
+			timestamp 跟 datetime的区别: https://www.cnblogs.com/liuxs13/p/9760812.html
+			timestamp 跟 datetime默认时间的设置: https://blog.csdn.net/qq_41042595/article/details/88673553
+			charset=utf8
+
+	    13. 
+	    	int(4) 
+	    	  >> https://zhidao.baidu.com/question/534029329.html
+	    	  >> https://blog.csdn.net/qq_26723085/article/details/81738655
+
+	    	char 跟 varchar
+	    	  >> https://www.cnblogs.com/ttxcs/p/11614473.html
+
+		14. windows下查看端口被占用及处理
+			>> https://www.cnblogs.com/fuxuepan/p/9525246.html
+
+		15. tomcat服务器线程数
+
+		16. enum类型
+		    @Excel注解源码解析
+		    @Size
+		    return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
+		    serialVersionUID
+		    数据库属性设置用'_', 对应的Java实体类用驼峰
+		    有没有必要再子类上 + serialVersionUID
