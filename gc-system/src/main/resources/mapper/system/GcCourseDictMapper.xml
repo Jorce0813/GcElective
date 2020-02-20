@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gc.system.mapper.GcCourseDictMapper">
+
+    <resultMap type="GcCourseType" id="CourseTypeResult">
+        <id     property="typeId"   column="type_id"   />
+        <result property="typeName"   column="type_name"   />
+        <result property="createTime"   column="create_time"   />
+    </resultMap>
+
+    <!-- 查询课程类型 -->
+    <select id="getCourseType" resultMap="CourseTypeResult" >
+        select type_id, type_name from gc_course_type
+    </select>
+
+</mapper>

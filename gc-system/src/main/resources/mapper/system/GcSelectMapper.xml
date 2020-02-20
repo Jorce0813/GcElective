@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gc.system.mapper.GcSelectMapper">
+
+    <resultMap type="GcSchedule" id="GcScheduleResult">
+        <id     property="scheId"       column="sche_id"                     />
+        <result property="courseName"     column="course_name"               />
+        <result property="teacherName"      column="teacher_name"            />
+        <result property="teachTimeAndLoc"     column="teach_time_loc"       />
+        <result property="courseCredit"    column="course_credit"            />
+        <result property="classSize"       column="class_size"               />
+        <result property="selectedSize"      column="selected_size"          />
+    </resultMap>
+
+    <!-- 根据条件查询课程列表 -->
+    <!-- params[courseType], courseName, teacherName -->
+    <select id="selectScheduleList" parameterType="GcSchedule" resultMap="GcScheduleResult" >
+        select sche_id, gs.course_name, teacher_name, teach_time_loc, course_credit, class_size, selected_size
+        from gc_course gc
+            join gc_course_type gct on gc.course_type = gct.type_id
+            join gc_schedule gs on gc.course_id = gs.course_id
+        where sche_id != '0' 
+        <if test="params.courseType !=null and params.courseType != ''">
+            AND gc.course_type = #{params.courseType}
+        </if>
+        <if test="courseName != null and courseName != ''">
+            AND gct.course_name = #{courseName}
+        </if>
+        <if test="teacherName != null and teacherName != ''">
+            AND gct.teacher_name = #{teacherName}
+        </if>
+    </select>
+
+</mapper>

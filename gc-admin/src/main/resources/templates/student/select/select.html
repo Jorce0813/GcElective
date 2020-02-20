@@ -11,16 +11,16 @@
                 <div class="select-list">
                     <ul>
                         <li>
-                            课程类型：<select name="status" th:with="type=${@dict.getType('sys_normal_disable')}">
+                            课程类型：<select name="params[courseType]" th:with="type=${@gdict.getCourseType()}">
                             <option value="">所有</option>
-                            <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                            <option th:each="dict : ${type}" th:text="${dict.typeName}" th:value="${dict.typeId}"></option>
                         </select>
                         </li>
                         <li>
                             课程名称：<input type="text" name="courseName"/>
                         </li>
                         <li>
-                            课程老师：<input type="text" name="courseTeacher"/>
+                            课程老师：<input type="text" name="teacherName"/>
                         </li>
                         <li>
                             <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
@@ -55,51 +55,56 @@
 <script th:inline="javascript">
     var editFlag = [[${@permission.hasPermi('system:role:edit')}]];
     var removeFlag = [[${@permission.hasPermi('system:role:remove')}]];
-    var prefix = ctx + "system/role";
+    var prefix = ctx + "student/select";
 
 
     $(function() {
         var options = {
             url: prefix + "/list",
-            createUrl: prefix + "/add",
+/*          createUrl: prefix + "/add",
             updateUrl: prefix + "/edit/{id}",
             removeUrl: prefix + "/remove",
             exportUrl: prefix + "/export",
             sortName: "roleSort",
-            modalName: "角色",
-            columns: [{
-                checkbox: true
-            },
+            modalName: "角色",*/
+            columns: [
                 {
-                    field: 'roleId',
-                    title: '角色编号'
+                    field: 'scheId',
+                    title: '课程序号'
                 },
                 {
-                    field: 'roleName',
-                    title: '角色名称',
+                    field: 'courseName',
+                    title: '课程名称',
                     sortable: true
                 },
                 {
-                    field: 'roleKey',
-                    title: '权限字符',
+                    field: 'teacherName',
+                    title: '课程老师',
                     sortable: true
                 },
                 {
-                    field: 'roleSort',
-                    title: '显示顺序',
+                    field: 'teachTimeAndLoc',
+                    title: '上课时间&地点',
                     sortable: true
                 },
                 {
-                    visible: editFlag == 'hidden' ? false : true,
-                    title: '角色状态',
-                    align: 'center',
-                    formatter: function (value, row, index) {
-                        return statusTools(row);
-                    }
+                    field: 'courseCredit',
+                    title: '课程学分',
+                    sortable: true
                 },
                 {
-                    field: 'createTime',
-                    title: '创建时间',
+                    field: 'classSize',
+                    title: '课堂人数',
+                    sortable: true
+                },
+                {
+                    field: 'selectedSize',
+                    title: '已选人数',
+                    sortable: true
+                },
+                {
+                    field: 'note',
+                    title: '备注',
                     sortable: true
                 },
                 {
@@ -108,9 +113,6 @@
                     formatter: function(value, row, index) {
                         var actions = [];
                         actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.roleId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
-                        actions.push('<a class="btn btn-primary btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="authDataScope(\'' + row.roleId + '\')"><i class="fa fa-check-square-o"></i>数据权限</a> ');
-                        actions.push('<a class="btn btn-info btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="authUser(\'' + row.roleId + '\')"><i class="fa fa-user"></i>分配用户</a> ');
-                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.roleId + '\')"><i class="fa fa-remove"></i>删除</a> ');
                         return actions.join('');
                     }
                 }]

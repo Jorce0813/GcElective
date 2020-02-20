@@ -21,14 +21,20 @@ public class GcSchedule extends BaseEntity {
     /** 教师ID **/
     private Long teacherId;
 
+    /** 教师姓名 **/
+    private String teacherName;
+
     /** 课程ID **/
     private Long courseId;
 
-    /** 上课时间 **/
-    private String techTime;
+    /** 课程名称 **/
+    private String courseName;
 
-    /** 上课地点 **/
-    private String techLoc;
+    /** 上课时间跟地点 **/
+    private String teachTimeAndLoc;
+
+    /** 课程学分 **/
+    private int courseCredit;
 
     /** 课堂人数 **/
     private int classSize;
@@ -58,6 +64,14 @@ public class GcSchedule extends BaseEntity {
         this.teacherId = teacherId;
     }
 
+    public String getTeacherName() {
+        return teacherName;
+    }
+
+    public void setTeacherName(String teacherName) {
+        this.teacherName = teacherName;
+    }
+
     public Long getCourseId() {
         return courseId;
     }
@@ -66,20 +80,28 @@ public class GcSchedule extends BaseEntity {
         this.courseId = courseId;
     }
 
-    public String getTechTime() {
-        return techTime;
+    public String getCourseName() {
+        return courseName;
     }
 
-    public void setTechTime(String techTime) {
-        this.techTime = techTime;
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
     }
 
-    public String getTechLoc() {
-        return techLoc;
+    public String getTeachTimeAndLoc() {
+        return teachTimeAndLoc;
     }
 
-    public void setTechLoc(String techLoc) {
-        this.techLoc = techLoc;
+    public void setTeachTimeAndLoc(String techTimeAndLoc) {
+        this.teachTimeAndLoc = techTimeAndLoc;
+    }
+
+    public int getCourseCredit() {
+        return courseCredit;
+    }
+
+    public void setCourseCredit(int courseCredit) {
+        this.courseCredit = courseCredit;
     }
 
     public int getClassSize() {
@@ -121,9 +143,11 @@ public class GcSchedule extends BaseEntity {
         return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
                 .append("scheId", getScheId())
                 .append("teacherId", getTeacherId())
+                .append("teacherName", getTeacherName())
                 .append("courseId", getCourseId())
-                .append("techTime", getTechTime())
-                .append("techLoc", getTechLoc())
+                .append("courseName", getCourseName())
+                .append("techTimeAndLoc", getTeachTimeAndLoc())
+                .append("courseCredit", getCourseCredit())
                 .append("classSize", getClassSize())
                 .append("selectedSize", getSelectedSize())
                 .append("createTime", getCreateTime())

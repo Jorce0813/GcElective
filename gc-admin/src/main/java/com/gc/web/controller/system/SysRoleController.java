@@ -53,7 +53,7 @@ public class SysRoleController extends BaseController
     @PostMapping("/list")
     @ResponseBody
     public TableDataInfo list(SysRole role)
-    {
+    { //参数传递
         startPage();
         List<SysRole> list = roleService.selectRoleList(role);
         return getDataTable(list);

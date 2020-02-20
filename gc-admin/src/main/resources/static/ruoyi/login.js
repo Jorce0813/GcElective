@@ -24,10 +24,10 @@ function login() {
         type: "post",
         url: ctx + "login",
         data: {
-            "username": username,
-            "password": password,
-            "validateCode" : validateCode,
-            "rememberMe": rememberMe
+             "username": username,
+             "password": password,
+             "validateCode" : validateCode,
+             "rememberMe": rememberMe
         },
         success: function(r) {
             if (r.code == 0) {
