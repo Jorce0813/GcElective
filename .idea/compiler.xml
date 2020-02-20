@@ -7,8 +7,8 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="gc-admin" />
-        <module name="gc-common" />
         <module name="gc-quartz" />
+        <module name="gc-common" />
         <module name="gc-framework" />
         <module name="gc-system" />
         <module name="gc-generator" />
@@ -22,13 +22,6 @@
       <module name="gc-generator" target="1.8" />
       <module name="gc-quartz" target="1.8" />
       <module name="gc-system" target="1.8" />
-      <module name="ruoyi" target="1.8" />
-      <module name="ruoyi-admin" target="1.8" />
-      <module name="ruoyi-common" target="1.8" />
-      <module name="ruoyi-framework" target="1.8" />
-      <module name="ruoyi-generator" target="1.8" />
-      <module name="ruoyi-quartz" target="1.8" />
-      <module name="ruoyi-system" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

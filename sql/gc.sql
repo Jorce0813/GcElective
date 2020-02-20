@@ -97,9 +97,10 @@ drop table if exists gc_schedule;
 create table gc_schedule(
   sche_id       bigint(20)    not null auto_increment        comment '排课ID',
   teacher_id    bigint(20)    not null                       comment '教师ID',
+  teacher_name  varchar(50)   not null                       comment '教师姓名',
   course_id     bigint(20)    not null                       comment '课程ID',
-  tech_time     varchar(100)  default ''                     comment '上课时间',
-  tech_loc      varchar(100)  default ''                     comment '上课地点',
+  course_name   varchar(100)  not null                       comment '课程名称',
+  tech_time_loc     varchar(100)  default ''                     comment '上课时间',
   class_size    int(3)        not null                       comment '课堂人数',
   selected_size int(3)        not null                       comment '已选人数',
   create_time   datetime      default CURRENT_TIMESTAMP      comment '课程创建时间',
@@ -107,9 +108,10 @@ create table gc_schedule(
   primary key (sche_id)
 ) engine=innodb auto_increment=1 charset=utf8 comment='排课表';
 
-insert into gc_schedule values(1, 1, 1, '["w1s2":"1,2,3,4,5,6,7,8,14,15,16", "w4s3":"1,14,15,16"]', '["w1s2":"2-506", "w4s3":"3-207"]', 150, 0, '2020-02-13 16:07:35', '');
-insert into gc_schedule values(2, 2, 2, '["w1s2":"1,2,3,4,5,6,7,8,14,15,16", "w4s3":"1,14,15,16"]', '["w1s2":"2-506", "w4s3":"3-207"]', 150, 0, '2020-02-13 16:07:35', '');
-
+-- insert into gc_schedule values(1, 1, 1, '["w1s2":"1,2,3,4,5,6,7,8,14,15,16", "w4s3":"1,14,15,16"]', '["w1s2":"2-506", "w4s3":"3-207"]', 150, 0, '2020-02-13 16:07:35', '');
+-- insert into gc_schedule values(2, 2, 2, '["w1s2":"1,2,3,4,5,6,7,8,14,15,16", "w4s3":"1,14,15,16"]', '["w1s2":"2-506", "w4s3":"3-207"]', 150, 0, '2020-02-13 16:07:35', '');
+   insert into gc_schedule values(1, 1, '陈老师', 1, '大学英语', '{"info": [{"week":"1,2,3,4,5,6,7,8,14,15,16", "point":"1-2", "loc":"2-506"}, {"week":"1,14,15,16", "point":"4-3", "loc":"3-207"}]}',150, 0, '2020-02-13 16:07:35', '');
+   insert into gc_schedule values(2, 2, '张老师', 2, '大学语文', '{"info": [{"week":"1,2,3,4,5,6,7,8,14,15,16", "point":"1-2", "loc":"2-506"}, {"week":"1,14,15,16", "point":"4-3", "loc":"3-207"}]}',150, 0, '2020-02-13 16:07:35', '');
 
 
 -- --------------------
