@@ -3,22 +3,22 @@
 -- --------------------
 drop table if exists gc_user;
 create table gc_user(
-  user_id     bigint(20)    not null auto_increment       comment '用户ID',
+    user_id     bigint(20)    not null auto_increment       comment '用户ID',
   inst_id     bigint(20)    not null                      comment '学院ID',
-  login_name  varchar(20)   not null                      comment '登录名',
-  user_name   varchar(30)   not null                      comment '用户名',
-  user_type   char(1)       not null                      comment '用户类别,0=管理员,1=学生',
-  email       varchar(50)   default ''                    comment '邮箱',
-  phone       varchar(11)   default ''                    comment '手机号',
-  sex         char(1)       not null                      comment '0-男,1-女',
-  avatar      varchar(255)  default ''                    comment '头像路径',
-  password    varchar(100)  not null                      comment '加密密码串',
-  salt        varchar(50)   default ''                    comment '盐值',
-  status      char(1)       default '0'                   comment '0=停用,1=正常',
-  del_flag    char(1)       default '0'                   comment '0=存在,1=删除',
-  login_ip    varchar(16)   default ''                    comment '最后登录IP地址',
-  login_date  datetime      default CURRENT_TIMESTAMP     comment '最后登录时间',
-  create_time datetime      default CURRENT_TIMESTAMP     comment '用户创建时间',
+    login_name  varchar(20)   not null                      comment '登录名',
+    user_name   varchar(30)   not null                      comment '用户名',
+    user_type   char(1)       not null                      comment '用户类别,0=管理员,1=学生',
+    email       varchar(50)   default ''                    comment '邮箱',
+    phone       varchar(11)   default ''                    comment '手机号',
+    sex         char(1)       not null                      comment '0-男,1-女',
+    avatar      varchar(255)  default ''                    comment '头像路径',
+    password    varchar(100)  not null                      comment '加密密码串',
+    salt        varchar(50)   default ''                    comment '盐值',
+    status      char(1)       default '0'                   comment '0=停用,1=正常',
+    del_flag    char(1)       default '0'                   comment '0=存在,1=删除',
+    login_ip    varchar(16)   default ''                    comment '最后登录IP地址',
+    login_date  datetime      default CURRENT_TIMESTAMP     comment '最后登录时间',
+    create_time datetime      default CURRENT_TIMESTAMP     comment '用户创建时间',
   primary key (user_id)
 ) engine=innodb auto_increment=1 charset=utf8 comment='用户表';
 
@@ -32,12 +32,13 @@ drop table if exists gc_institue;
 create table gc_institue(
   inst_id     bigint(20)    not null auto_increment       comment '学院ID',
   inst_name   varchar(50)   default ''                    comment '学院名',
+  inst_table  varchar(50)   not null                      comment '学院对应的已选课表名',
   create_time datetime      default CURRENT_TIMESTAMP     comment '创建时间',
   primary key (inst_id)
 ) engine=innodb auto_increment=1 charset=utf8 comment='学院表';
 
-insert into gc_institue values(1, '信息学院', '2020-02-13 16:07:35');
-insert into gc_institue values(2, '国际商学院', '2020-02-13 16:07:35');
+insert into gc_institue values(1, '信息学院', 'gc_sc_xx', '2020-02-13 16:07:35');
+insert into gc_institue values(2, '国际商学院', 'gc_sc_gjs', '2020-02-13 16:07:35');
 
 -- --------------------
 -- 3. 课程表 + 课程类型表
@@ -52,9 +53,18 @@ create table gc_course(
   primary key (course_id)
 ) engine=innodb auto_increment=1 charset=utf8 comment='课程表';
 
-insert into gc_course values(1, '大学英语', '0', 3, 32);
-insert into gc_course values(2, '大学语文', '0', 4, 32);
-insert into gc_course values(3, '数据库原理', '1', 4, 32);
+insert into gc_course values(1, '大学英语', '1', 3, 32);
+insert into gc_course values(2, '大学语文', '1', 2, 32);
+insert into gc_course values(3, '数据库原理', '2', 4, 32);
+insert into gc_course values(4, '数据结构', '2', 3, 32);
+insert into gc_course values(5, 'JavaEE', '3', 4, 32);
+insert into gc_course values(6, '计算机系统基础', '3', 2, 32);
+insert into gc_course values(7, '项目管理', '4', 4, 32);
+insert into gc_course values(8, 'c语言程序设计', '4', 2, 32);
+insert into gc_course values(9, '操作系统', '4', 3, 32);
+insert into gc_course values(10, '云计算体系架构', '5', 3, 32);
+insert into gc_course values(11, '毕业实习', '5', 4, 32);
+insert into gc_course values(12, '毕业设计', '5', 5, 32);
 
 drop table if exists gc_course_type;
 create table gc_course_type(
@@ -112,6 +122,16 @@ create table gc_schedule(
 -- insert into gc_schedule values(2, 2, 2, '["w1s2":"1,2,3,4,5,6,7,8,14,15,16", "w4s3":"1,14,15,16"]', '["w1s2":"2-506", "w4s3":"3-207"]', 150, 0, '2020-02-13 16:07:35', '');
    insert into gc_schedule values(1, 1, '陈老师', 1, '大学英语', '{"info": [{"week":"1,2,3,4,5,6,7,8,14,15,16", "point":"1-2", "loc":"2-506"}, {"week":"1,14,15,16", "point":"4-3", "loc":"3-207"}]}',150, 0, '2020-02-13 16:07:35', '');
    insert into gc_schedule values(2, 2, '张老师', 2, '大学语文', '{"info": [{"week":"1,2,3,4,5,6,7,8,14,15,16", "point":"1-2", "loc":"2-506"}, {"week":"1,14,15,16", "point":"4-3", "loc":"3-207"}]}',150, 0, '2020-02-13 16:07:35', '');
+   insert into gc_schedule values(3, 2, '张老师', 3, '数据库原理', '{"info": [{"week":"1,2,3,4,5,6,7,8,14,15,16", "point":"1-2", "loc":"2-506"}, {"week":"1,14,15,16", "point":"4-3", "loc":"3-207"}]}',150, 0, '2020-02-13 16:07:35', '');
+   insert into gc_schedule values(4, 1, '陈老师', 4, '数据结构', '{"info": [{"week":"1,2,3,4,5,6,7,8,14,15,16", "point":"1-2", "loc":"2-506"}, {"week":"1,14,15,16", "point":"4-3", "loc":"3-207"}]}',150, 0, '2020-02-13 16:07:35', '');
+   insert into gc_schedule values(5, 2, '张老师', 5, 'JavaEE', '{"info": [{"week":"1,2,3,4,5,6,7,8,14,15,16", "point":"1-2", "loc":"2-506"}, {"week":"1,14,15,16", "point":"4-3", "loc":"3-207"}]}',150, 0, '2020-02-13 16:07:35', '');
+   insert into gc_schedule values(6, 1, '陈老师', 6, '计算机系统基础', '{"info": [{"week":"1,2,3,4,5,6,7,8,14,15,16", "point":"1-2", "loc":"2-506"}, {"week":"1,14,15,16", "point":"4-3", "loc":"3-207"}]}',150, 0, '2020-02-13 16:07:35', '');
+   insert into gc_schedule values(7, 1, '陈老师', 7, '项目管理', '{"info": [{"week":"1,2,3,4,5,6,7,8,14,15,16", "point":"1-2", "loc":"2-506"}, {"week":"1,14,15,16", "point":"4-3", "loc":"3-207"}]}',150, 0, '2020-02-13 16:07:35', '');
+   insert into gc_schedule values(8, 2, '张老师', 8, 'c语言程序设计', '{"info": [{"week":"1,2,3,4,5,6,7,8,14,15,16", "point":"1-2", "loc":"2-506"}, {"week":"1,14,15,16", "point":"4-3", "loc":"3-207"}]}',150, 0, '2020-02-13 16:07:35', '');
+   insert into gc_schedule values(9, 1, '陈老师', 9, '操作系统', '{"info": [{"week":"1,2,3,4,5,6,7,8,14,15,16", "point":"1-2", "loc":"2-506"}, {"week":"1,14,15,16", "point":"4-3", "loc":"3-207"}]}',150, 0, '2020-02-13 16:07:35', '');
+   insert into gc_schedule values(10, 2, '张老师', 10, '云计算体系架构', '{"info": [{"week":"1,2,3,4,5,6,7,8,14,15,16", "point":"1-2", "loc":"2-506"}, {"week":"1,14,15,16", "point":"4-3", "loc":"3-207"}]}',150, 0, '2020-02-13 16:07:35', '');
+   insert into gc_schedule values(11, 1, '陈老师', 11, '毕业实习', '{"info": [{"week":"1,2,3,4,5,6,7,8,14,15,16", "point":"1-2", "loc":"2-506"}, {"week":"1,14,15,16", "point":"4-3", "loc":"3-207"}]}',150, 0, '2020-02-13 16:07:35', '');
+   insert into gc_schedule values(12, 2, '张老师', 12, '毕业设计', '{"info": [{"week":"1,2,3,4,5,6,7,8,14,15,16", "point":"1-2", "loc":"2-506"}, {"week":"1,14,15,16", "point":"4-3", "loc":"3-207"}]}',150, 0, '2020-02-13 16:07:35', '');
 
 
 -- --------------------
@@ -122,12 +142,13 @@ create table gc_sc_xx(
   sc_id        bigint(20)    not null auto_increment         comment '已选课程ID',
   user_id      bigint(20)    not null                        comment '学生ID',
   sche_id      bigint(20)    not null                        comment '排课ID',
+  voluntary    int(1)        not null default '1'            comment '选课志愿', 
   create_time  datetime      default CURRENT_TIMESTAMP       comment '选课时间',
   primary key (sc_id)
 ) engine=innodb auto_increment=1 charset=utf8 comment='已选课表-信息学院';
 
-insert into gc_sc_xx values(1, 1, 1, '2020-02-13 16:07:35');
-insert into gc_sc_xx values(2, 1, 2, '2020-02-13 16:07:35');
+insert into gc_sc_xx values(1, 1, 1, 1, '2020-02-13 16:07:35');
+insert into gc_sc_xx values(2, 1, 2, 1, '2020-02-13 16:07:35');
 
 
 -- --------------------
@@ -138,9 +159,10 @@ create table gc_sc_gjs(
   sc_id        bigint(20)    not null auto_increment         comment '已选课程ID',
   user_id      bigint(20)    not null                        comment '学生ID',
   sche_id      bigint(20)    not null                        comment '排课ID',
+  voluntary    int(1)        not null default '1'            comment '选课志愿',
   create_time  datetime      default CURRENT_TIMESTAMP       comment '选课时间',
   primary key (sc_id)
 ) engine=innodb auto_increment=1 charset=utf8 comment='已选课表-国际商学院';
 
-insert into gc_sc_gjs values(1, 2, 1, '2020-02-13 16:07:35');
-insert into gc_sc_gjs values(2, 2, 2, '2020-02-13 16:07:35');
+insert into gc_sc_gjs values(1, 2, 1, 1, '2020-02-13 16:07:35');
+insert into gc_sc_gjs values(2, 2, 2, 1, '2020-02-13 16:07:35');
