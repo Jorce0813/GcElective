@@ -32,18 +32,7 @@
         </div>
 
         <div class="btn-group-sm" id="toolbar" role="group">
-            <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="system:role:add">
-                <i class="fa fa-plus"></i> 新增
-            </a>
-            <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="system:role:edit">
-                <i class="fa fa-edit"></i> 修改
-            </a>
-            <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="system:role:remove">
-                <i class="fa fa-remove"></i> 删除
-            </a>
-            <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:role:export">
-                <i class="fa fa-download"></i> 导出
-            </a>
+
         </div>
 
         <div class="col-sm-12 select-table table-striped">
@@ -61,12 +50,6 @@
     $(function() {
         var options = {
             url: prefix + "/list",
-/*          createUrl: prefix + "/add",
-            updateUrl: prefix + "/edit/{id}",
-            removeUrl: prefix + "/remove",
-            exportUrl: prefix + "/export",
-            sortName: "roleSort",
-            modalName: "角色",*/
             columns: [
                 {
                     field: 'scheId',
@@ -112,7 +95,11 @@
                     align: 'center',
                     formatter: function(value, row, index) {
                         var actions = [];
-                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.roleId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        if (isSelected(row.scheId) == true) {
+                            actions.push('<span class="help-block m-b-none"><i class="fa fa-info-circle"></i>课程已选</span>')
+                        }else {
+                            actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="choose(\'' + row.scheId + '\')"><i class="fa fa-edit"></i>选择课程</a> ');
+                        }
                         return actions.join('');
                     }
                 }]
@@ -120,40 +107,61 @@
         $.table.init(options);
     });
 
-    /* 角色管理-分配数据权限 */
-    function authDataScope(roleId) {
-        var url = prefix + '/authDataScope/' + roleId;
-        $.modal.open("分配数据权限", url);
-    }
-
-    /* 角色管理-分配用户 */
-    function authUser(roleId) {
-        var url = prefix + '/authUser/' + roleId;
-        $.modal.openTab("分配用户", url);
-    }
-
-    /* 角色状态显示 */
-    function statusTools(row) {
-        if (row.status == 1) {
-            return '<i class=\"fa fa-toggle-off text-info fa-2x\" onclick="enable(\'' + row.roleId + '\')"></i> ';
+    /** 选择课程 */
+    function choose(scheId) {
+        // 先判断是否会冲突 [时间冲突]
+        // var resultMsg = isConflict(scheId);
+        var resultMsg = null;
+        if (resultMsg == null) {
+            var url = prefix + '/choose/' + scheId;
+            $.modal.open("选择课程", url);
         } else {
-            return '<i class=\"fa fa-toggle-on text-info fa-2x\" onclick="disable(\'' + row.roleId + '\')"></i> ';
+            $.modal.alertError("与已选课程 【" + resultMsg + "】 冲突");
         }
     }
 
-    /* 角色管理-停用 */
-    function disable(roleId) {
-        $.modal.confirm("确认要停用角色吗？", function() {
-            $.operate.post(prefix + "/changeStatus", { "roleId": roleId, "status": 1 });
-        })
+    /** 判断课程是否已选 */
+    function isSelected(scheId) {
+        var isSelect; //定义var, function()不能直接 return true / return false
+        $.ajax({
+            type: "GET",
+            url: prefix + '/isSelected/' + scheId,
+            async: false, //必须设置 async==false
+            error: function (request) {
+                $.modal.alertError("系统错误");
+            },
+            success: function (result) {
+                if (result.code == web_status.SUCCESS) {
+                    isSelect = false;
+                } else {
+                    isSelect = true;
+                }
+            }
+        });
+        return isSelect;
     }
 
-    /* 角色管理启用 */
-    function enable(roleId) {
-        $.modal.confirm("确认要启用角色吗？", function() {
-            $.operate.post(prefix + "/changeStatus", { "roleId": roleId, "status": 0 });
-        })
+    /** 判断是否选课冲突 */
+    function isConflict(scheId) {
+        var res;
+        $.ajax({
+            type: "GET",
+            url: prefix + '/isConflict/' + scheId,
+            async: false,
+            error: function (request) {
+                $.modal.alertError("系统错误");
+            },
+            success: function (result) {
+                if (result.code == web_status.SUCCESS) {
+                    res = null;
+                } else {
+                    res = result.msg;
+                }
+            }
+        });
+        return res;
     }
+
 </script>
 </body>
 </html>

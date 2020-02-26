@@ -24,6 +24,12 @@ public class GcSc extends BaseEntity {
     /** 排课ID **/
     private Long scheId;
 
+    /** 选课志愿 **/
+    private int voluntary;
+
+    /** 对应哪个学院的数据库表-插入选课记录时用 **/
+    private String tableName;
+
     /** 选课时间 **/
     private Date createTime;
 
@@ -51,6 +57,22 @@ public class GcSc extends BaseEntity {
         this.scheId = scheId;
     }
 
+    public int getVoluntary() {
+        return voluntary;
+    }
+
+    public void setVoluntary(int voluntary) {
+        this.voluntary = voluntary;
+    }
+
+    public String getTableName() {
+        return tableName;
+    }
+
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
+    }
+
     @Override
     public Date getCreateTime() {
         return createTime;
@@ -67,6 +89,8 @@ public class GcSc extends BaseEntity {
                 .append("scId", getScId())
                 .append("userId", getUserId())
                 .append("scheId", getScheId())
+                .append("voluntary", getVoluntary())
+                .append("tableName", getTableName())
                 .append("createTime", getCreateTime())
                 .toString();
     }

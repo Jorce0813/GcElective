@@ -28,6 +28,9 @@ public class SysUser extends BaseEntity
     @Excel(name = "部门编号", type = Type.IMPORT)
     private Long deptId;
 
+    /** 学院ID */
+    private Long instId;
+
     /** 部门父ID */
     private Long parentId;
 
@@ -120,7 +123,8 @@ public class SysUser extends BaseEntity
 
     public static boolean isAdmin(Long userId)
     {
-        return userId != null && 1L == userId;
+        // return userId != null &&  1L== userId;
+        return userId != null && 0 != userId;
     }
 
     public Long getDeptId()
@@ -131,6 +135,14 @@ public class SysUser extends BaseEntity
     public void setDeptId(Long deptId)
     {
         this.deptId = deptId;
+    }
+
+    public Long getInstId() {
+        return instId;
+    }
+
+    public void setInstId(Long instId) {
+        this.instId = instId;
     }
 
     public Long getParentId()
@@ -328,6 +340,7 @@ public class SysUser extends BaseEntity
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("userId", getUserId())
             .append("deptId", getDeptId())
+            .append("instId", getInstId())
             .append("loginName", getLoginName())
             .append("userName", getUserName())
             .append("email", getEmail())

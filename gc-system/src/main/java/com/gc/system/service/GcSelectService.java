@@ -1,5 +1,6 @@
 package com.gc.system.service;
 
+import com.gc.system.domain.GcSc;
 import com.gc.system.domain.GcSchedule;
 
 import java.util.List;
@@ -18,5 +19,23 @@ public interface GcSelectService {
      * @return List<GcSchedule>
      **/
     public List<GcSchedule> selectScheduleList(GcSchedule gcSchedule);
+
+    public GcSchedule selectScheduleByScheId(Long scheId);
+
+    public int addSelectedSize(GcSc gcSc);
+
+    public int reduceSelectedSize(GcSc gcSc);
+
+    public int insertSelectedCourse(GcSc gcSc);
+
+    public Integer isSelected(GcSc gcSc);
+
+    /**
+     * 判断 [准备选] 的课程跟该学生 [已经选了的] 课程是否冲突
+     *
+     * @Param [gcSc]
+     * @return java.lang.String - 返回第一个冲突的 [课程名称]
+     **/
+    public String isConflict(GcSc gcSc);
 
 }

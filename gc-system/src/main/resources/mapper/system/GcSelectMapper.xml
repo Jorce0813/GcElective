@@ -21,16 +21,64 @@
         from gc_course gc
             join gc_course_type gct on gc.course_type = gct.type_id
             join gc_schedule gs on gc.course_id = gs.course_id
-        where sche_id != '0' 
+        where sche_id != '0'
         <if test="params.courseType !=null and params.courseType != ''">
             AND gc.course_type = #{params.courseType}
         </if>
         <if test="courseName != null and courseName != ''">
-            AND gct.course_name = #{courseName}
+            AND gs.course_name = #{courseName}
         </if>
         <if test="teacherName != null and teacherName != ''">
-            AND gct.teacher_name = #{teacherName}
+            AND gs.teacher_name = #{teacherName}
         </if>
+    </select>
+
+    <!-- 根据 [scheId] 查询排课表信息 -->
+    <select id="selectScheduleByScheId" parameterType="java.lang.Long" resultMap="GcScheduleResult">
+        select * from gc_schedule
+        where sche_id = #{scheId}
+    </select>
+    
+    <!-- 更新选课人数[增加的情况] -->
+    <update id="addSelectedSize" parameterType="GcSc">
+        update gc_schedule
+        set selected_size = selected_size + 1
+        where sche_id = #{scheId}
+    </update>
+    
+    <!-- 更新选课人数[减少的情况] -->
+    <update id="reduceSelectedSize" parameterType="GcSc">
+        update gc_schedule
+        set selected_size = selected_size - 1
+        where sche_id = #{scheId}
+    </update>
+
+    <!-- 插入已选课表 -->
+    <insert id="insertSelectedCourse" parameterType="GcSc" statementType="STATEMENT">
+        insert into ${tableName} (user_id, sche_id, voluntary)
+        values (${userId}, ${scheId}, ${voluntary})
+    </insert>
+
+    <!-- 获取学院对应的 [已选课表] 数据表名 -->
+    <select id="getTableName" parameterType="java.lang.Long" resultType="java.lang.String">
+        select inst_table
+        from gc_institue
+        where inst_id = #{instId}
+    </select>
+
+    <!-- 判断学生对该课程是否已选 -->
+    <select id="isSelected" parameterType="GcSc" resultType="java.lang.Integer" statementType="STATEMENT">
+        select count(1)
+        from ${tableName}
+        where user_id = ${userId} and sche_id = ${scheId}
+    </select>
+
+    <!-- 查询指定学生的已选课程信息 -->
+    <select id="selectCourseListByUserId" parameterType="GcSc" resultMap="GcScheduleResult" statementType="STATEMENT">
+        select course_name, teach_time_loc
+        from ${tableName} a
+            left join gc_schedule b on a.sche_id = b.sche_id
+        where a.user_id = ${userId} and a.voluntary = ${voluntary}
     </select>
 
 </mapper>
