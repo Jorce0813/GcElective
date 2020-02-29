@@ -5,6 +5,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 排课表 gc_schedule
@@ -32,6 +33,9 @@ public class GcSchedule extends BaseEntity {
 
     /** 上课时间跟地点 **/
     private String teachTimeAndLoc;
+
+    /** scheId : gcId = 1 : n */
+    private List<GcSc> gcScs;
 
     /** 课程学分 **/
     private int courseCredit;
@@ -94,6 +98,14 @@ public class GcSchedule extends BaseEntity {
 
     public void setTeachTimeAndLoc(String techTimeAndLoc) {
         this.teachTimeAndLoc = techTimeAndLoc;
+    }
+
+    public List<GcSc> getGcScs() {
+        return gcScs;
+    }
+
+    public void setGcScs(List<GcSc> gcScs) {
+        this.gcScs = gcScs;
     }
 
     public int getCourseCredit() {

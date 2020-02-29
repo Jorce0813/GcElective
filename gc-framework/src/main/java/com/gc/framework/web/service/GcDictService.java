@@ -1,7 +1,9 @@
 package com.gc.framework.web.service;
 
+import com.gc.framework.util.ShiroUtils;
 import com.gc.system.domain.GcCourseType;
 import com.gc.system.service.GcCourseDictService;
+import com.gc.system.service.ISysTimeTableService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,9 @@ public class GcDictService {
     @Autowired
     private GcCourseDictService gcCourseDictService;
 
+    @Autowired
+    private ISysTimeTableService iSysTimeTableService;
+
     /**
      * 获取课程的类型
      *
@@ -26,6 +31,18 @@ public class GcDictService {
      **/
     public List<GcCourseType> getCourseType(){
         return gcCourseDictService.getCourseType();
+    }
+
+    /**
+     * 获取已选课程的总学分
+     *
+     * @Param []
+     * @return int
+     **/
+    public int getTotalCredit(){
+        Long userId = ShiroUtils.getSysUser().getUserId();
+        int creditSum = iSysTimeTableService.getTotalCredit(userId);
+        return creditSum;
     }
 
 }

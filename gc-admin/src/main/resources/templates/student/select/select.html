@@ -107,17 +107,35 @@
         $.table.init(options);
     });
 
-    /** 选择课程 */
+    /** 选择课程 -- 判断是否会冲突已转移到choose.html中进行后端的判断, 此处仅做学分上限限制判断使用 + 跳转 */
     function choose(scheId) {
-        // 先判断是否会冲突 [时间冲突]
-        // var resultMsg = isConflict(scheId);
-        var resultMsg = null;
-        if (resultMsg == null) {
+        if (creditLimit(scheId) == true) {
+            $.modal.alertError("选课学分即将超过学分上限, 请合理安排课程");
+        } else {
             var url = prefix + '/choose/' + scheId;
             $.modal.open("选择课程", url);
-        } else {
-            $.modal.alertError("与已选课程 【" + resultMsg + "】 冲突");
         }
+    }
+
+    /** 判断选课学分是否超出上限 */
+    function creditLimit(scheId) {
+        var limit;
+        $.ajax({
+            type: "get",
+            url: prefix + "/creditLimit/" + scheId,
+            async: false,
+            error: function (request) {
+                $.modal.alertError("系统错误");
+            },
+            success: function (result) {
+                if (result.code == web_status.SUCCESS) {
+                    limit = false;
+                } else {
+                    limit = true;
+                }
+            }
+        });
+        return limit;
     }
 
     /** 判断课程是否已选 */
@@ -141,7 +159,7 @@
         return isSelect;
     }
 
-    /** 判断是否选课冲突 */
+    /** 判断是否选课冲突 -- 已弃用 */
     function isConflict(scheId) {
         var res;
         $.ajax({

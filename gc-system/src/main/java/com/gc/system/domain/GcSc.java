@@ -25,7 +25,7 @@ public class GcSc extends BaseEntity {
     private Long scheId;
 
     /** 选课志愿 **/
-    private int voluntary;
+    private String voluntary;
 
     /** 对应哪个学院的数据库表-插入选课记录时用 **/
     private String tableName;
@@ -57,11 +57,11 @@ public class GcSc extends BaseEntity {
         this.scheId = scheId;
     }
 
-    public int getVoluntary() {
+    public String getVoluntary() {
         return voluntary;
     }
 
-    public void setVoluntary(int voluntary) {
+    public void setVoluntary(String voluntary) {
         this.voluntary = voluntary;
     }
 

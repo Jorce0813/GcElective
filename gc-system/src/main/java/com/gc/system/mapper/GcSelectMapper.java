@@ -76,4 +76,12 @@ public interface GcSelectMapper {
      **/
     public List<GcSchedule> selectCourseListByUserId(GcSc gcSc);
 
+    /**
+     * 根据scheId查询课程学分
+     *
+     * @Param [scheId]
+     * @return java.lang.Integer
+     **/
+    public Integer getCourseCreditByScheId(Long scheId);
+
 }

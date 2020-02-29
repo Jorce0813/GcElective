@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gc.system.mapper.SysTimeTableMapper">
+
+    <resultMap type="GcSchedule" id="TimeTableResult" >
+        <id     property="scheId"            column="sche_id"            />
+        <result property="teacherId"         column="teacher_id"         />
+        <result property="teacherName"       column="teacher_name"       />
+        <result property="courseId"          column="course_id"          />
+        <result property="courseName"        column="course_name"        />
+        <result property="teachTimeAndLoc"   column="teach_time_loc"     />
+        <result property="courseCredit"      column="course_credit"      />
+        <result property="classSize"         column="class_size"         />
+        <result property="selectedSize"      column="selected_size"      />
+        <result property="createTime"        column="create_time"        />
+        <result property="note"              column="note"               />
+        <collection property="gcScs" ofType="GcSc">
+            <id property="scId"             column="sc_id"       />
+            <result property="userId"       column="user_id"     />
+            <result property="scheId"       column="sche_id"     />
+            <result property="voluntary"    column="voluntary"   />
+            <result property="tableName"    column="table_name"  />
+            <result property="createTime"   column="create_time" />
+        </collection>
+    </resultMap>
+
+    <!-- 查询指定用户的已选课表信息 -->
+    <select id="selectCourseListByUserId" parameterType="java.lang.String" resultMap="TimeTableResult" statementType="STATEMENT" >
+        select gs.sche_id, gs.course_name, teacher_name, teach_time_loc, course_credit, voluntary
+        from gc_schedule gs
+            join ${tableName} t on gs.sche_id = t.sche_id
+            join gc_course gc on gs.course_id = gc.course_id
+        where user_id = ${userId}
+    </select>
+
+    <!-- 获取学院对应的 [已选课表] 数据表名 -->
+    <select id="getTableName" parameterType="java.lang.Long" resultType="java.lang.String">
+        select inst_table
+        from gc_institue
+        where inst_id = #{instId}
+    </select>
+
+    <!-- 退选课程 -->
+    <delete id="withdrawal" statementType="STATEMENT">
+        delete from ${tableName} where user_id = ${userId} and sche_id = ${scheId}
+    </delete>
+
+    <!-- 退选课程后更新选课人数 -->
+    <!-- 更新选课人数[增加的情况] -->
+    <update id="reduceSelectedSize" parameterType="java.lang.Long">
+        update gc_schedule
+        set selected_size = selected_size - 1
+        where sche_id = #{scheId}
+    </update>
+
+    <!-- 获取已选总学分 -->
+    <select id="getTotalCredit" resultType="java.lang.Integer" statementType="STATEMENT">
+        select sum(course_credit)
+        from ${tableName} t
+            join gc_schedule gs on t.sche_id = gs.sche_id
+            join gc_course gc on gs.course_id = gc.course_id
+        where user_id = ${userId}
+    </select>
+
+</mapper>

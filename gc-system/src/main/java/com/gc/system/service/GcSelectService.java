@@ -38,4 +38,6 @@ public interface GcSelectService {
      **/
     public String isConflict(GcSc gcSc);
 
+    public Integer getCourseCreditByScheId(Long scheId);
+
 }

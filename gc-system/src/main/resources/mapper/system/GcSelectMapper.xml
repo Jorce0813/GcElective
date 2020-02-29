@@ -81,4 +81,12 @@
         where a.user_id = ${userId} and a.voluntary = ${voluntary}
     </select>
 
+    <!-- 根据scheId查询课程学分 -->
+    <select id="getCourseCreditByScheId" parameterType="java.lang.Long" resultType="java.lang.Integer">
+        select course_credit
+        from gc_course gc
+            join gc_schedule gs on gc.course_id = gs.course_id
+        where sche_id = #{scheId}
+    </select>
+
 </mapper>

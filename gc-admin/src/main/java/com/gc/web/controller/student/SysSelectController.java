@@ -7,6 +7,7 @@ import com.gc.framework.util.ShiroUtils;
 import com.gc.system.domain.GcSc;
 import com.gc.system.domain.GcSchedule;
 import com.gc.system.service.GcSelectService;
+import com.gc.system.service.ISysTimeTableService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -30,6 +31,9 @@ public class SysSelectController extends BaseController {
 
     @Autowired
     private GcSelectService gcSelectService;
+
+    @Autowired
+    private ISysTimeTableService iSysTimeTableService;
 
 
     /**
@@ -69,7 +73,6 @@ public class SysSelectController extends BaseController {
         gcSc.setUserId(userId);
         gcSc.setScheId(scheId);
         Integer isSlected = gcSelectService.isSelected(gcSc);
-        System.out.println("isSelected: " + isSlected);
         if (isSlected > 0) {
             return error("该课程已选");
         } else {
@@ -151,5 +154,25 @@ public class SysSelectController extends BaseController {
         }
     }
 
+    /**
+     * 判断学分是否超出上限
+     *
+     * @Param [scheId]
+     * @return com.gc.common.core.domain.AjaxResult
+     **/
+    @GetMapping("/creditLimit/{scheId}")
+    @ResponseBody
+    public AjaxResult creditLimit(@PathVariable("scheId") Long scheId) {
+        // 已选的课程总学分
+        Long userId = ShiroUtils.getSysUser().getUserId();
+        int creditSum = iSysTimeTableService.getTotalCredit(userId);
+        // 待选[即将要选的课程]的学分
+        int courseCredit = gcSelectService.getCourseCreditByScheId(scheId);
+        if ((creditSum + courseCredit) <= 32) {
+            return success();
+        } else {
+            return error();
+        }
+    }
 
 }

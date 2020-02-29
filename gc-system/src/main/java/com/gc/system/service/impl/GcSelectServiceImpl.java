@@ -204,4 +204,15 @@ public class GcSelectServiceImpl implements GcSelectService {
         return null;
     }
 
+    /**
+     * 根据scheId查询课程学分
+     *
+     * @Param [scheId]
+     * @return java.lang.Integer
+     **/
+    @Override
+    public Integer getCourseCreditByScheId(Long scheId) {
+        return gcSelectMapper.getCourseCreditByScheId(scheId);
+    }
+
 }
