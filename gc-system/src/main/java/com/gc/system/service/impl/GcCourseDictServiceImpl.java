@@ -1,6 +1,7 @@
 package com.gc.system.service.impl;
 
 import com.gc.system.domain.GcCourseType;
+import com.gc.system.domain.GcInstitue;
 import com.gc.system.mapper.GcCourseDictMapper;
 import com.gc.system.service.GcCourseDictService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,11 @@ public class GcCourseDictServiceImpl implements GcCourseDictService {
     @Override
     public List<GcCourseType> getCourseType() {
         return gcCourseDictMapper.getCourseType();
+    }
+
+    @Override
+    public List<GcInstitue> getAllInstitue() {
+        return gcCourseDictMapper.getAllInstitue();
     }
 
 }

@@ -10,9 +10,20 @@
         <result property="createTime"   column="create_time"   />
     </resultMap>
 
+    <resultMap id="InstitueResult" type="GcInstitue">
+        <id property="instId" column="inst_id"/>
+        <result property="instName" column="inst_name"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
     <!-- 查询课程类型 -->
     <select id="getCourseType" resultMap="CourseTypeResult" >
         select type_id, type_name from gc_course_type
+    </select>
+
+    <!-- 查询所有学院 -->
+    <select id="getAllInstitue" resultMap="InstitueResult" >
+        select inst_id, inst_name from gc_institue
     </select>
 
 </mapper>

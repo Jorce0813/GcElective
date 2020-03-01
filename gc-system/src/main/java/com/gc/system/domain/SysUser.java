@@ -25,10 +25,11 @@ public class SysUser extends BaseEntity
     private Long userId;
 
     /** 部门ID */
-    @Excel(name = "部门编号", type = Type.IMPORT)
+    // @Excel(name = "部门编号", type = Type.IMPORT)
     private Long deptId;
 
     /** 学院ID */
+    @Excel(name = "学院编号", type = Type.IMPORT)
     private Long instId;
 
     /** 部门父ID */
@@ -82,11 +83,16 @@ public class SysUser extends BaseEntity
     private Date loginDate;
 
     /** 部门对象 */
-    @Excels({
+/*    @Excels({
         @Excel(name = "部门名称", targetAttr = "deptName", type = Type.EXPORT),
         @Excel(name = "部门负责人", targetAttr = "leader", type = Type.EXPORT)
-    })
+    })*/
     private SysDept dept;
+
+    @Excels({
+            @Excel(name = "所属学院", targetAttr = "instName", type = Type.EXPORT)
+    })
+    private GcInstitue institue;
 
     private List<SysRole> roles;
 
@@ -123,8 +129,8 @@ public class SysUser extends BaseEntity
 
     public static boolean isAdmin(Long userId)
     {
-        // return userId != null &&  1L== userId;
-        return userId != null && 0 != userId;
+        return userId != null &&  1L== userId;
+        // return userId != null && 0 != userId;
     }
 
     public Long getDeptId()
@@ -303,6 +309,17 @@ public class SysUser extends BaseEntity
     public void setDept(SysDept dept)
     {
         this.dept = dept;
+    }
+
+    public GcInstitue getInstitue() {
+        if (institue == null) {
+            this.institue = new GcInstitue();
+        }
+        return institue;
+    }
+
+    public void setInstitue(GcInstitue institue) {
+        this.institue = institue;
     }
 
     public List<SysRole> getRoles()
