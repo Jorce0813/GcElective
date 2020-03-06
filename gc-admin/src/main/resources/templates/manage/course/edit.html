@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改课程')" />
+    <th:block th:include="include :: ztree-css" />
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-course-edit" th:object="${schedule}">
+        <input id="scheId" name="scheId" type="hidden" th:field="*{scheId}"/>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">课程名称：</label>
+            <div class="col-sm-8">
+                <input class="form-control" type="text" name="courseName" id="courseName" readonly="true" th:field="*{courseName}" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">课程老师：</label>
+            <div class="col-sm-8">
+                <input class="form-control" type="text" name="teacherName" id="teacherName" readonly="true" th:field="*{teacherName}" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">课程学分：</label>
+            <div class="col-sm-8">
+                <input class="form-control" type="text" name="courseCredit" id="courseCredit" readonly="true" th:field="*{courseCredit}" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">开课人数：</label>
+            <div class="col-sm-8">
+                <input class="form-control" type="text" name="classSize" id="classSize" th:field="*{classSize}" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">上课时间&地点：</label>
+            <div class="col-sm-8">
+                <table id="itable">
+                    <tr><td align="center">上课周次 </td><td align="center">上课节次 </td><td align="center">上课地点</td></tr>
+                </table>
+            </div>
+        </div>
+    </form>
+</div>
+<th:block th:include="include :: footer" />
+<th:block th:include="include :: ztree-js" />
+<script type="text/javascript">
+    var prefix = ctx + "manage/course";
+
+    /** 实例化/格式化teachTimeAndLoc表格 */
+    $(function () {
+        var teachTimeAndLoc = '[[${schedule.teachTimeAndLoc}]]';
+        //TODO: 正确转换从后端返回的字符串
+        var json = teachTimeAndLoc.replace(/&quot;/g, '"');
+        var arr = JSON.parse(json).info;
+        var html = '';
+        for (var i in arr) {
+            html += '<tr>';
+            html += '<td><input value="' + arr[i].week + '"></td>';
+            html += '<td><input value="' + arr[i].point + '"></td>';
+            html += '<td><input value="' + arr[i].loc + '"></td>';
+            html += '</tr>';
+        }
+        $("#itable").append(html);
+    });
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            edit();
+        }
+    }
+
+    function edit() {
+        var data = $("#form-course-edit").serializeArray();
+        /** start - 获取表格数据 */
+        var ttl = {};
+        var info = [];
+        var count = 0; //去除表头的标记
+        $("#itable").find("tr").each(function () {
+            if (count == 0) {
+                count = count + 1;
+            } else {
+                var tdArr = $(this).children();
+                var week = tdArr.eq(0).find("input").val();
+                var point = tdArr.eq(1).find("input").val();
+                var loc = tdArr.eq(2).find("input").val();
+                ttl.week = week;
+                ttl.point = point;
+                ttl.loc = loc;
+                info.push(ttl);
+                ttl = {}; //清除内容
+            }
+        });
+        var teachTimeAndLoc = {};
+        teachTimeAndLoc.info = info;
+        /** end - 获取表格数据 */
+        data.push({"name": "teachTimeAndLoc", "value": JSON.stringify(teachTimeAndLoc)});
+        $.operate.save(prefix + "/update", data);
+    }
+</script>
+</body>
+</html>

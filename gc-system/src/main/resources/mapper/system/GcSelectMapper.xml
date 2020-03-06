@@ -21,7 +21,7 @@
         from gc_course gc
             join gc_course_type gct on gc.course_type = gct.type_id
             join gc_schedule gs on gc.course_id = gs.course_id
-        where sche_id != '0'
+        where sche_id != '0' AND del_flag = '0'
         <if test="params.courseType !=null and params.courseType != ''">
             AND gc.course_type = #{params.courseType}
         </if>

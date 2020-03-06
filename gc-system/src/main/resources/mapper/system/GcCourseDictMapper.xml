@@ -16,6 +16,16 @@
         <result property="createTime" column="create_time"/>
     </resultMap>
 
+    <resultMap id="CourseResult" type="GcCourse">
+        <id property="courseId" column="course_id"/>
+        <result property="courseName" column="course_name"/>
+    </resultMap>
+
+    <resultMap id="TeacherResult" type="GcTeacher">
+        <id property="tId" column="t_id"/>
+        <result property="tName" column="t_name"/>
+    </resultMap>
+
     <!-- 查询课程类型 -->
     <select id="getCourseType" resultMap="CourseTypeResult" >
         select type_id, type_name from gc_course_type
@@ -24,6 +34,18 @@
     <!-- 查询所有学院 -->
     <select id="getAllInstitue" resultMap="InstitueResult" >
         select inst_id, inst_name from gc_institue
+    </select>
+
+    <!-- 查询所有课程 -->
+    <select id="getAllCourse" resultMap="CourseResult">
+        select course_id, course_name
+        from gc_course
+    </select>
+
+    <!-- 查询所有老师 -->
+    <select id="getAllTeacher" resultMap="TeacherResult">
+        select t_id, t_name
+        from gc_teacher
     </select>
 
 </mapper>

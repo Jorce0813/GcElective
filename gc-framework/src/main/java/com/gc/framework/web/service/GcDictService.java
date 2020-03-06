@@ -1,8 +1,10 @@
 package com.gc.framework.web.service;
 
 import com.gc.framework.util.ShiroUtils;
+import com.gc.system.domain.GcCourse;
 import com.gc.system.domain.GcCourseType;
 import com.gc.system.domain.GcInstitue;
+import com.gc.system.domain.GcTeacher;
 import com.gc.system.service.GcCourseDictService;
 import com.gc.system.service.ISysTimeTableService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +56,26 @@ public class GcDictService {
      **/
     public List<GcInstitue> getInstitue(){
         return gcCourseDictService.getAllInstitue();
+    }
+
+    /**
+     * 获取所有课程
+     *
+     * @return java.util.List<com.gc.system.domain.GcCourse>
+     * @Param []
+     **/
+    public List<GcCourse> getAllCourse() {
+        return gcCourseDictService.getAllCourse();
+    }
+
+    /**
+     * 获取所有老师信息
+     *
+     * @return java.util.List<com.gc.system.domain.GcTeacher>
+     * @Param []
+     **/
+    public List<GcTeacher> getAllTeacher() {
+        return gcCourseDictService.getAllTeacher();
     }
 
 }

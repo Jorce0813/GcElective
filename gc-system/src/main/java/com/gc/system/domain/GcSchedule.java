@@ -1,5 +1,6 @@
 package com.gc.system.domain;
 
+import com.gc.common.annotation.Excel;
 import com.gc.common.core.domain.BaseEntity;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -17,30 +18,38 @@ public class GcSchedule extends BaseEntity {
     private static final Long serialVersionUID = 1L;
 
     /** 排课ID **/
+    @Excel(name = "排课ID", type = Excel.Type.EXPORT, prompt = "排课序号")
     private Long scheId;
 
     /** 教师ID **/
+    @Excel(name = "教师ID", cellType = Excel.ColumnType.NUMERIC, prompt = "教师编号")
     private Long teacherId;
 
     /** 教师姓名 **/
+    @Excel(name = "教师姓名")
     private String teacherName;
 
     /** 课程ID **/
+    @Excel(name = "课程ID", cellType = Excel.ColumnType.NUMERIC, prompt = "课程编号")
     private Long courseId;
 
     /** 课程名称 **/
+    @Excel(name = "课程名称")
     private String courseName;
 
     /** 上课时间跟地点 **/
+    @Excel(name = "上课时间&地点")
     private String teachTimeAndLoc;
 
     /** scheId : gcId = 1 : n */
     private List<GcSc> gcScs;
 
     /** 课程学分 **/
+    @Excel(name = "课程学分", type = Excel.Type.EXPORT, prompt = "课程学分")
     private int courseCredit;
 
     /** 课堂人数 **/
+    @Excel(name = "课堂人数", cellType = Excel.ColumnType.NUMERIC)
     private int classSize;
 
     /** 已选人数 **/

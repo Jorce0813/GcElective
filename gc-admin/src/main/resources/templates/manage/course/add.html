@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('新增排课')" />
+    <th:block th:include="include :: ztree-css" />
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-course-add">
+        <input id="scheId" name="scheId" type="hidden"/>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">课程名称：</label>
+            <div class="col-sm-8">
+                <select name="courseId" class="form-control m-b" th:with="type=${@gdict.getAllCourse()}">
+                    <option th:each="dict : ${type}" th:text="${dict.getCourseName()}" th:value="${dict.getCourseId()}"></option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">课程老师：</label>
+            <div class="col-sm-8">
+                <select name="teacherId" class="form-control m-b" th:with="type=${@gdict.getAllTeacher()}">
+                    <option th:each="dict : ${type}" th:text="${dict.gettName()}" th:value="${dict.gettId()}" ></option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">开课人数：</label>
+            <div class="col-sm-8">
+                <input class="form-control" type="text" name="classSize" id="classSize" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">上课时间&地点：</label>
+            <div class="col-sm-8">
+                <table id="itable">
+                    <tr><td align="center">上课周次 </td><td align="center">上课节次 </td><td align="center">上课地点</td></tr>
+                </table>
+            </div>
+        </div>
+    </form>
+</div>
+<th:block th:include="include :: footer" />
+<th:block th:include="include :: ztree-js" />
+<script type="text/javascript">
+    var prefix = ctx + "manage/course";
+
+    /** 实例化/格式化teachTimeAndLoc表格 */
+    $(function () {
+        var html = '';
+        for (var i = 0; i < 2; i++) {
+            html += '<tr>';
+            html += '<td><input type="text"></td>';
+            html += '<td><input type="text"></td>';
+            html += '<td><input type="text"></td>';
+            html += '</tr>';
+        }
+        $("#itable").append(html);
+    });
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            edit();
+        }
+    }
+
+    function edit() {
+        var data = $("#form-course-add").serializeArray();
+        /** start - 获取表格数据 */
+        var ttl = {};
+        var info = [];
+        var count = 0; //去除表头的标记
+        $("#itable").find("tr").each(function () {
+            if (count == 0) {
+                count = count + 1;
+            } else {
+                var tdArr = $(this).children();
+                var week = tdArr.eq(0).find("input").val();
+                var point = tdArr.eq(1).find("input").val();
+                var loc = tdArr.eq(2).find("input").val();
+                ttl.week = week;
+                ttl.point = point;
+                ttl.loc = loc;
+                info.push(ttl);
+                ttl = {}; //清除内容
+            }
+        });
+        var teachTimeAndLoc = {};
+        teachTimeAndLoc.info = info;
+        /** end - 获取表格数据 */
+        data.push({"name": "teachTimeAndLoc", "value": JSON.stringify(teachTimeAndLoc)});
+        $.operate.save(prefix + "/addSave", data);
+    }
+</script>
+</body>
+</html>

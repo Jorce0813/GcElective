@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gc.system.mapper.SysCourseMapper">
+
+    <resultMap type="GcSchedule" id="GcScheduleResult">
+        <id     property="scheId"            column="sche_id"          />
+        <result property="courseId"          column="course_id"        />
+        <result property="courseName"        column="course_name"      />
+        <result property="teacherId"         column="teacher_id"       />
+        <result property="teacherName"       column="teacher_name"     />
+        <result property="teachTimeAndLoc"   column="teach_time_loc"   />
+        <result property="courseCredit"      column="course_credit"    />
+        <result property="classSize"         column="class_size"       />
+        <result property="selectedSize"      column="selected_size"    />
+    </resultMap>
+
+    <!-- (批量)删除课程 -->
+    <update id="deleteCourseByIds" parameterType="java.lang.Long">
+        update gc_schedule set del_flag = '2'
+        where sche_id in
+        <foreach collection="array" item="scheId" open="(" separator="," close=")">
+            #{scheId}
+        </foreach>
+    </update>
+
+    <!-- 根据scheId查询课程信息 -->
+    <select id="selectScheduleByScheId" parameterType="java.lang.Long" resultMap="GcScheduleResult">
+        select sche_id, gs.course_name, teacher_name, teach_time_loc, class_size, course_credit
+        from gc_schedule gs
+            left join gc_course gc on gs.course_id = gc.course_id
+        where sche_id = #{scheId}
+    </select>
+
+    <!-- 更新排课信息 -->
+    <update id="updateSchedule" parameterType="GcSchedule" >
+        update gc_schedule
+        set course_name = #{courseName}, teacher_name = #{teacherName}, class_size = #{classSize}, teach_time_loc = #{teachTimeAndLoc}
+        where sche_id = #{scheId};
+    </update>
+
+    <!-- 更新课程信息 -->
+    <update id="updateCourse" parameterType="GcSchedule">
+        update gc_course
+        set course_credit = #{courseCredit}
+        where course_id = (select course_id from gc_schedule where sche_id = #{scheId})
+    </update>
+
+    <!-- 根据id查询课程名 -->
+    <select id="getCourseNameById" parameterType="java.lang.Long" resultType="java.lang.String">
+        select course_name
+        from gc_course
+        where course_id = #{courseId}
+    </select>
+    
+    <!-- 根据id查询教师名 -->
+    <select id="getTeacherNameById" parameterType="java.lang.Long" resultType="java.lang.String">
+        select t_name
+        from gc_teacher
+        where t_id = #{tId}
+    </select>
+
+    <!-- 插入排课 -->
+    <insert id="insertSchedule" parameterType="GcSchedule">
+        insert into gc_schedule(
+            <if test="teacherId !=null and teacherId != '0' ">teacher_id,</if>
+            <if test="teacherName != null and teacherName != '' ">teacher_name,</if>
+            <if test="courseId != null and courseId != '0' ">course_id,</if>
+            <if test="courseName != null and courseName != '' ">course_name,</if>
+            <if test="teachTimeAndLoc != null and teachTimeAndLoc != '' ">teach_time_loc,</if>
+            <if test="classSize != null">class_size,</if>
+            del_flag
+        )
+        values (
+            <if test="teacherId !=null and teacherId != '0' ">#{teacherId},</if>
+            <if test="teacherName != null and teacherName != '' ">#{teacherName},</if>
+            <if test="courseId != null and courseId != '0' ">#{courseId},</if>
+            <if test="courseName != null and courseName != '' ">#{courseName},</if>
+            <if test="teachTimeAndLoc != null and teachTimeAndLoc != '' ">#{teachTimeAndLoc},</if>
+            <if test="classSize != null">#{classSize},</if>
+            '0'
+        )
+    </insert>
+
+    <!-- teacher_id + course_id 查询 排课信息[teach_time_loc] -->
+    <select id="getScheduleById" parameterType="GcSchedule" resultMap="GcScheduleResult">
+        select teach_time_loc
+        from gc_schedule
+        where teacher_id = #{teacherId} and course_id = #{courseId}
+    </select>
+
+    <!-- 根据条件查询排课数据 -->
+    <select id="getScheduleList" parameterType="GcSchedule" resultMap="GcScheduleResult">
+        select sche_id, gs.course_id, gs.course_name, teacher_id, teacher_name, teach_time_loc, class_size, course_credit
+        from gc_schedule gs
+            join gc_course gc on gs.course_id = gc.course_id
+        where del_flag = '0'
+            <if test="courseName != null and courseName != ''"> and gs.course_name = #{courseName}</if>
+            <if test="teacherName != null and teacherName != ''">and teacher_name = #{teacherName}</if>
+            <if test="params.courseType != null and params.courseType != ''"> and course_type = #{params.courseType}</if>
+    </select>
+
+</mapper>
