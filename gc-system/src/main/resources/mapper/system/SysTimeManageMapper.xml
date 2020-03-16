@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gc.system.mapper.SysTimeManageMapper">
+
+    <resultMap id="ManageResult" type="GcTimeManage">
+        <id     property="id"             column="id"           />
+        <result property="startTime"      column="start_time"   />
+        <result property="endTime"        column="end_time"     />
+        <result property="drawFlag"       column="draw_flag"    />
+        <result property="note"           column="note"         />
+        <result property="updateTime"     column="update_time"  />
+    </resultMap>
+
+    <resultMap id="GcScResult" type="GcSc">
+        <id     property="scId"         column="sc_id"           />
+        <result property="userId"       column="user_id"         />
+        <result property="scheId"       column="sche_id"         />
+        <result property="voluntary"    column="voluntary"       />
+        <result property="createTime"   column="create_time"     />
+    </resultMap>
+
+    <!-- 查询当前的选课时间信息 -->
+    <select id="getManage" resultMap="ManageResult">
+        select start_time, end_time, draw_flag, note
+        from gc_time_manage
+    </select>
+
+    <!-- [设置选课 - 更新] + [开始抽签 - 设置draw_flag] -->
+    <update id="update" parameterType="GcTimeManage">
+        update gc_time_manage
+        set 
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="drawFlag != null">draw_flag = #{drawFlag},</if>
+            <if test="note != null and note != ''">note = #{note},</if>
+            update_time = sysdate()
+    </update>
+
+    <!-- 获取所有排课的ID -->
+    <select id="getScheduleIdList" resultType="java.lang.Long">
+        select sche_id from gc_schedule
+    </select>
+
+    <!-- 根据 voluntary && scheId 获取[某门课某个志愿]的选课记录[sc_id、user_id] -->
+    <!-- 分库分表的查询总数据 - 目前只有两张表-->
+    <select id="getGcScByVoluntaryAndScheId" resultMap="GcScResult">
+        (select sc_id, user_id from gc_sc_xx where sche_id = ${scheId} and voluntary = ${voluntary} and create_time <![CDATA[ >= ]]> &apos;${startTime}&apos; and create_time <![CDATA[ <= ]]> &apos;${endTime}&apos;)
+         union all
+        (select sc_id, user_id from gc_sc_gjs where sche_id = ${scheId} and voluntary = ${voluntary} and create_time <![CDATA[ >= ]]> &apos;${startTime}&apos; and create_time <![CDATA[ <= ]]> &apos;${endTime}&apos;)
+    </select>
+    
+    <select id="getClassSizeById" parameterType="java.lang.Long" resultType="java.lang.Integer">
+        select class_size from gc_schedule where sche_id = #{scheId}
+    </select>
+
+    <!-- 获取学院对应的 [已选课表] 数据表名 -->
+    <select id="getTableName" parameterType="java.lang.Long" resultType="java.lang.String">
+        select inst_table
+        from gc_institue
+        where inst_id = #{instId}
+    </select>
+
+    <!-- 根据id删除记录 - 将选不上的记录删除 -->
+    <delete id="deleteRecodeById" parameterType="java.util.Map" statementType="STATEMENT">
+        delete from ${tableName} where sc_id in
+            <foreach collection="ids" item="id" separator="," open="(" close=")">
+                ${id}
+            </foreach>
+    </delete>
+    
+    <!-- 根据scheId查询课程的ID -->
+    <select id="getCourseIdByScheId" parameterType="java.lang.Long" resultType="java.lang.Long">
+        select course_id from gc_schedule where sche_id = #{scheId}
+    </select>
+
+    <select id="getSelectedSizeById" parameterType="java.lang.Long" resultType="java.lang.Integer">
+        select selected_size from gc_schedule where sche_id = #{scheId}
+    </select>
+
+    <!-- 根据id删除记录 - 将选上后的同门课程选了其他志愿的记录删除 -->
+    <delete id="deleteRecode" statementType="STATEMENT">
+        delete from ${tableName}
+        where user_id = ${userId}
+            and sche_id in (
+                select tt.sche_id from (
+                    select t.sche_id
+                    from ${tableName} t
+                        join gc_schedule gs on t.sche_id = gs.sche_id
+                    where user_id = ${userId} and voluntary != ${voluntary} and course_id = ${courseId}
+                ) tt
+            )
+    </delete>
+
+    <!-- 计算某门排课的已选中, 比当前志愿小的志愿的已选人数 + 已经选上的人数-->
+    <select id="selectCountOfVoluntary" resultType="java.lang.Integer">
+        select sum(c) from
+        (
+            (select count(*) c from gc_sc_xx where sche_id = ${scheId} and voluntary &lt; ${voluntary} and create_time <![CDATA[ >= ]]> &apos;${startTime}&apos; and create_time <![CDATA[ <= ]]> &apos;${endTime}&apos;)
+            union all
+            (select count(*) c from gc_sc_xx where sche_id = ${scheId} and create_time <![CDATA[ < ]]> &apos;${startTime}&apos;)
+            union all
+            (select count(*) c from gc_sc_gjs where sche_id = ${scheId} and voluntary &lt; ${voluntary} and create_time <![CDATA[ >= ]]> &apos;${startTime}&apos; and create_time <![CDATA[ <= ]]> &apos;${endTime}&apos;)
+            union all
+            (select count(*) c from gc_sc_gjs where sche_id = ${scheId} and create_time <![CDATA[ < ]]> &apos;${startTime}&apos;)
+        ) tt
+    </select>
+
+    <!-- 抽签结束后, 批量更新已选人数 -->
+    <update id="batchUpdateSelectedSize" parameterType="java.util.List">
+        update gc_schedule
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="selected_size = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when sche_id = #{item.scheId} then #{item.selectedSize}
+                </foreach>
+            </trim>
+        </trim>
+        where sche_id in 
+        <foreach collection="list" item="item" index="index" separator="," open="(" close=")">
+            #{item.scheId,jdbcType=BIGINT}
+        </foreach>
+    </update>
+
+
+
+</mapper>

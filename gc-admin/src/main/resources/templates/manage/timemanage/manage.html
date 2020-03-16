@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<html lang="zh">
+<head>
+	<th:block th:include="include :: header('选课管理')" />
+	<th:block th:include="include :: datetimepicker-css" />
+</head>
+<style>
+    .droppable-active{background-color:#ffe!important}.tools a{cursor:pointer;font-size:80%}.form-body .col-md-6,.form-body .col-md-12{min-height:400px}.draggable{cursor:move}
+</style>
+<body class="gray-bg">
+    <div class="wrapper wrapper-content">
+        <div class="row">
+            <div class="col-sm-5">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5></h5>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="alert alert-info" style="text-align: center; font-size: 15px;">
+                           	 选课安排
+                        </div>
+                        <form role="form" class="form-horizontal m-t" id="course-select-arrange">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">开始时间：</label>
+                                <div class="col-sm-9">
+                                    <div class="input-group date">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                        <input type="text" name="startTime" class="form-control" >
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group ">
+                                <label class="col-sm-3 control-label">结束时间：</label>
+                                <div class="col-sm-9">
+                                    <div class="input-group date">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                        <input type="text" name="endTime" class="form-control" >
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group ">
+                                <label class="col-sm-3 control-label">备注：</label>
+                                <div class="col-sm-9">
+                                    <textarea type="text" name="note" class="form-control" placeholder="请输入文本"></textarea>
+                                </div>
+                            </div>
+                            <div class="hr-line-dashed"></div>
+                            <div class="form-group draggable">
+                                <div class="col-sm-12 col-sm-offset-3">
+									<button type="button" class="btn btn-primary" onclick="setUpCourseSelect()">设置选课</button>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									<button onclick="reset('course-select-arrange')" class="btn btn-danger" type="button">重置</button>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+            </div>
+            <!-- *** -->
+            <div class="col-sm-5">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5></h5>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="alert alert-info" style="text-align: center; font-size: 15px">
+                            选课抽签
+                        </div>
+                        <form role="form" class="form-horizontal m-t" id="course-draw">
+                            <div class="form-group ">
+                                <label class="col-sm-3 control-label">开始时间：</label>
+                                <div class="col-sm-9">
+                                    <p class="form-control-static" id="startTime"></p>
+                                </div>
+                            </div>
+                            <div class="form-group ">
+                                <label class="col-sm-3 control-label" >结束时间：</label>
+                                <div class="col-sm-9">
+                                    <p class="form-control-static" id="endTime"></p>
+                                </div>
+                            </div>
+                            <div class="form-group ">
+                                <label class="col-sm-3 control-label">是否开始：</label>
+                                <div class="col-sm-9">
+                                    <p class="form-control-static" id="isStart"></p>
+                                </div>
+                            </div>
+                            <div class="form-group ">
+                                <label class="col-sm-3 control-label">是否结束：</label>
+                                <div class="col-sm-9">
+                                    <p class="form-control-static" id="isEnd"></p>
+                                </div>
+                            </div>
+                            <div class="form-group ">
+                                <label class="col-sm-3 control-label">备注：</label>
+                                <div class="col-sm-9">
+                                    <p class="form-control-static" id="note"></p>
+                                </div>
+                            </div>
+                            <div class="form-group ">
+                                <label class="col-sm-3 control-label">抽签规则：</label>
+                                <div class="col-sm-9">
+                                    <select class="form-control" name="drawRule">
+                                        <option value="0">志愿优先-随机筛选</option>
+                                        <option value="1">志愿优先-先到先得</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="hr-line-dashed"></div>
+                            <div class="form-group ">
+                                <div class="col-sm-12 col-sm-offset-3">
+                                    <button type="button" id="draw-btn" class="btn btn-primary" onclick="draw()">开始抽签</button>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <button onclick="reset('course-draw')" class="btn btn-danger" type="button">重置</button>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+   <th:block th:include="include :: footer" />
+   <script th:src="@{/js/jquery-ui-1.10.4.min.js}"></script>
+   <th:block th:include="include :: datetimepicker-js" />
+   <script th:src="@{/ajax/libs/beautifyhtml/beautifyhtml.js}"></script>
+   <script type="text/javascript">
+       var prefix = ctx + "manage/time";
+
+       $(function () {
+           init();
+       });
+
+       /* 初始化信息 */
+       function init(){
+           $.ajax({
+               type: 'get',
+               url: prefix + "/get",
+               error: function (error) {
+                   $.modal.alertError(error);
+               },
+               success: function (result) {
+                   var startTime = result.data.startTime;
+                   var endTime = result.data.endTime;
+                   var drawFlag = result.data.drawFlag;
+                   var note = result.data.note;
+                   var isStart = new Date() > new Date(startTime) ? '是' : '否';
+                   var isEnd = new Date() > new Date(endTime) ? '是' : '否';
+
+                   if (startTime != null && startTime !== '') {
+                       $("#startTime").text(startTime);
+                   } else {
+                       $("#startTime").text('--');
+                   }
+                   if (endTime != null && endTime !== '') {
+                       $("#endTime").text(endTime);
+                   } else {
+                       $("#endTime").text('--');
+                   }
+                   if (note != null && note !== '') {
+                       $("#note").text(note);
+                   } else {
+                       $("#note").text('--');
+                   }
+                   $("#isStart").text(isStart);
+                   $("#isEnd").text(isEnd);
+                   // 选课未结束[包含未开始的状态], 将[开始抽签button]失效
+                   if (new Date() < new Date(endTime)) {
+                       $("#draw-btn").attr("disabled", true);
+                       $("#draw-btn").css({'backgroud-color': 'gray'});
+                       $("#draw-btn").attr("title", '选课未结束, 禁止抽签');
+                   }
+                   if (drawFlag === 1) {
+                       $("#draw-btn").attr("disabled", true);
+                       $("#draw-btn").css({'backgroud-color': 'gray'});
+                       $("#draw-btn").attr("title", '已经抽过签, 禁止再次抽签');
+                   }
+               }
+           });
+       }
+
+       $(".input-group.date").datetimepicker({
+    	   format: "yyyy-mm-dd hh:00:00",
+    	   minView: "month",
+    	   autoclose: true,
+    	 });
+
+       /* 设置选课提交事件 */
+       function setUpCourseSelect() {
+           var data = $("#course-select-arrange").serializeArray();
+           $.operate.save(prefix + "/setUpCourseSelect", data);
+       }
+
+       /* 开始抽签事件 */
+       function draw() {
+           var config = {
+               type: 'post',
+               url: prefix + "/draw",
+               beforeSend: function () {
+                   $.modal.loading("正在抽签中,此过程可能需要几分钟,请耐心等待......");
+                   $.modal.disable();
+               },
+               success: function (result) {
+                   if (typeof callback == "function") {
+                       callback(result);
+                   }
+                   $.operate.successCallback(result);
+               }
+           };
+           $.ajax(config);
+       }
+
+       /* 重置选项 */
+       function reset(formId) {
+           $("#" + formId).reset();
+       }
+
+   </script>
+</body>
+</html>

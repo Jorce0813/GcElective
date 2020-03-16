@@ -44,6 +44,6 @@ public interface SysTimeTableMapper {
      * @Param [userId, tableName]
      * @return int
      **/
-    public int getTotalCredit(@Param("userId") Long userId, @Param("tableName") String tableName);
+    public Integer getTotalCredit(@Param("userId") Long userId, @Param("tableName") String tableName);
 
 }

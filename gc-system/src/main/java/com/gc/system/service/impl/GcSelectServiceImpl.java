@@ -5,11 +5,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.gc.system.domain.GcSc;
 import com.gc.system.domain.GcSchedule;
 import com.gc.system.mapper.GcSelectMapper;
+import com.gc.system.mapper.SysTimeManageMapper;
 import com.gc.system.mapper.SysUserMapper;
 import com.gc.system.service.GcSelectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -25,6 +27,9 @@ public class GcSelectServiceImpl implements GcSelectService {
 
     @Autowired
     private SysUserMapper sysUserMapper;
+
+    @Autowired
+    private SysTimeManageMapper manageMapper;
 
     /**
      * 根据条件查询选课课程数据
@@ -168,6 +173,11 @@ public class GcSelectServiceImpl implements GcSelectService {
         Iterator<GcSchedule> ite = gList.iterator();
         while (ite.hasNext()) {
             GcSchedule gs = ite.next();
+            /* start :add in 2020/03/10 : 添加判断: 选课时[同名课程]是否选过前端传过来的选课志愿 */
+            if (gs.getCourseName().equals(schedule.getCourseName())) {
+                return gs.getCourseName();
+            }
+            /* end : */
             String teachTimeAndLoc2 = gs.getTeachTimeAndLoc();
             // 格式化json数据, 取出上课时间和地点
             JSONObject jo2 = JSONObject.parseObject(teachTimeAndLoc2);
@@ -215,4 +225,17 @@ public class GcSelectServiceImpl implements GcSelectService {
         return gcSelectMapper.getCourseCreditByScheId(scheId);
     }
 
+    @Override
+    public Integer hasSelected(GcSc gcSc) {
+        Long instId = sysUserMapper.selectUserById(gcSc.getUserId()).getInstId();
+        String tableName = gcSelectMapper.getTableName(instId);
+        Date startTime = manageMapper.getManage().getStartTime();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        return gcSelectMapper.hasSelected(tableName, gcSc.getUserId(), gcSc.getScheId(), df.format(startTime));
+    }
+
+    @Override
+    public Integer hasSelected(String tableName, Long userId, Long scheId, String startTime) {
+        return gcSelectMapper.hasSelected(tableName, userId, scheId, startTime);
+    }
 }

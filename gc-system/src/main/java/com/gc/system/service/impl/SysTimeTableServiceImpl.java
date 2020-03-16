@@ -164,7 +164,7 @@ public class SysTimeTableServiceImpl implements ISysTimeTableService {
     public int getTotalCredit(Long userId) {
         Long instId = sysUserMapper.selectUserById(userId).getInstId();
         String tableName = sysTimeTableMapper.getTableName(instId);
-        int creditSum = sysTimeTableMapper.getTotalCredit(userId, tableName);
-        return creditSum;
+        Integer creditSum = sysTimeTableMapper.getTotalCredit(userId, tableName);
+        return creditSum == null ? 0 :creditSum;
     }
 }

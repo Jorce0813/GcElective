@@ -89,4 +89,14 @@
         where sche_id = #{scheId}
     </select>
 
+    <!-- 根据scheId得到courseId, 然后判断本轮选课之前的选课轮次是否已经抽中了该courseId -->
+    <select id="hasSelected" resultType="java.lang.Integer" statementType="STATEMENT">
+        select count(*)
+        from ${tableName} t
+            join gc_schedule gs on t.sche_id = gs.sche_id
+        where user_id = ${userId} and
+              course_id  = (select course_id from gc_schedule where sche_id = ${scheId}) and
+              t.create_time <![CDATA[ < ]]> &apos; ${startTime} &apos;
+    </select>
+
 </mapper>

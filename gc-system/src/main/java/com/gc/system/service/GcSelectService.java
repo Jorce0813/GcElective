@@ -2,7 +2,9 @@ package com.gc.system.service;
 
 import com.gc.system.domain.GcSc;
 import com.gc.system.domain.GcSchedule;
+import org.apache.ibatis.annotations.Param;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -39,5 +41,16 @@ public interface GcSelectService {
     public String isConflict(GcSc gcSc);
 
     public Integer getCourseCreditByScheId(Long scheId);
+
+    public Integer hasSelected(GcSc gcSc);
+
+    /**
+     * 根据scheId得到courseId, 然后判断本轮选课之前的选课轮次是否已经抽中了该courseId
+     *
+     * @return java.lang.Integer
+     * @Param [tableName, userId, scheId, startTime]
+     **/
+    public Integer hasSelected(String tableName, Long userId, Long scheId, String startTime);
+
 
 }

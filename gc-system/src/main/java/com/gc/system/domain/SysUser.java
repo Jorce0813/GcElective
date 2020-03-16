@@ -129,8 +129,8 @@ public class SysUser extends BaseEntity
 
     public static boolean isAdmin(Long userId)
     {
-        return userId != null &&  1L== userId;
-        // return userId != null && 0 != userId;
+        // return userId != null &&  1L== userId;
+         return userId != null && 0 != userId;
     }
 
     public Long getDeptId()

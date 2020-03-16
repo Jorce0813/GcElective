@@ -132,6 +132,16 @@ public class SysSelectController extends BaseController {
         // 1. 先判断 [相同志愿下是否有课程冲突]
         Long userId = ShiroUtils.getSysUser().getUserId();
         gcSc.setUserId(userId);
+        /** start */
+        /* add in 2020/03/13 -> 增加判断: 在本轮选课之前的选课中, 该们排课的任意志愿是否有选中的情况*/
+        /* 当第一轮成功选上某门课之后, 第二轮选不同志愿时被选上的处理
+			: 在选课之前再加一个判断, 判断在该轮选课的Time之前有没有同个courseId选上了 */
+        int flag = gcSelectService.hasSelected(gcSc);
+        if (flag > 0) {
+            return error("该门课程已选过");
+        }
+        /** end */
+
         String conflictCourseName = gcSelectService.isConflict(gcSc);
 
         if (conflictCourseName == null) { // [课程 + 志愿没有冲突]
