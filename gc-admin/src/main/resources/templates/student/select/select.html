@@ -8,7 +8,7 @@
     <div class="row">
         <div class="col-sm-12 search-collapse">
             <form id="role-form">
-                <div class="select-list">
+                <div class="select-list" id="select-list">
                     <ul>
                         <li>
                             课程类型：<select name="params[courseType]" th:with="type=${@gdict.getCourseType()}">
@@ -48,64 +48,93 @@
 
 
     $(function() {
-        var options = {
-            url: prefix + "/list",
-            columns: [
-                {
-                    field: 'scheId',
-                    title: '课程序号'
-                },
-                {
-                    field: 'courseName',
-                    title: '课程名称',
-                    sortable: true
-                },
-                {
-                    field: 'teacherName',
-                    title: '课程老师',
-                    sortable: true
-                },
-                {
-                    field: 'teachTimeAndLoc',
-                    title: '上课时间&地点',
-                    sortable: true
-                },
-                {
-                    field: 'courseCredit',
-                    title: '课程学分',
-                    sortable: true
-                },
-                {
-                    field: 'classSize',
-                    title: '课堂人数',
-                    sortable: true
-                },
-                {
-                    field: 'selectedSize',
-                    title: '已选人数',
-                    sortable: true
-                },
-                {
-                    field: 'note',
-                    title: '备注',
-                    sortable: true
-                },
-                {
-                    title: '操作',
-                    align: 'center',
-                    formatter: function(value, row, index) {
-                        var actions = [];
-                        if (isSelected(row.scheId) == true) {
-                            actions.push('<span class="help-block m-b-none"><i class="fa fa-info-circle"></i>课程已选</span>')
-                        }else {
-                            actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="choose(\'' + row.scheId + '\')"><i class="fa fa-edit"></i>选择课程</a> ');
+        // 判断选课开始/正在选课/结束
+        if (isStartOrEnd() === false) {
+            $("#select-list").css({'display': 'none'});
+            $.modal.alert("选课未开始/已结束");
+        } else {
+            var options = {
+                url: prefix + "/list",
+                columns: [
+                    {
+                        field: 'scheId',
+                        title: '课程序号'
+                    },
+                    {
+                        field: 'courseName',
+                        title: '课程名称',
+                        sortable: true
+                    },
+                    {
+                        field: 'teacherName',
+                        title: '课程老师',
+                        sortable: true
+                    },
+                    {
+                        field: 'teachTimeAndLoc',
+                        title: '上课时间&地点',
+                        sortable: true
+                    },
+                    {
+                        field: 'courseCredit',
+                        title: '课程学分',
+                        sortable: true
+                    },
+                    {
+                        field: 'classSize',
+                        title: '课堂人数',
+                        sortable: true
+                    },
+                    {
+                        field: 'selectedSize',
+                        title: '已选人数',
+                        sortable: true
+                    },
+                    {
+                        field: 'note',
+                        title: '备注',
+                        sortable: true
+                    },
+                    {
+                        title: '操作',
+                        align: 'center',
+                        formatter: function (value, row, index) {
+                            var actions = [];
+                            if (isSelected(row.scheId) == true) {
+                                actions.push('<span class="help-block m-b-none"><i class="fa fa-info-circle"></i>课程已选</span>')
+                            } else {
+                                actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="choose(\'' + row.scheId + '\')"><i class="fa fa-edit"></i>选择课程</a> ');
+                            }
+                            return actions.join('');
                         }
-                        return actions.join('');
-                    }
-                }]
-        };
-        $.table.init(options);
+                    }]
+            };
+            $.table.init(options);
+        }
     });
+
+    /** 判断选课的时间状态 */
+    function isStartOrEnd() {
+        var flag;
+        var config = {
+            url: prefix + '/isStartOrEnd',
+            type: 'get',
+            async: false,
+            error: function (error) {
+                $.modal.alertError(error);
+            },
+            success: function (result) {
+                if (result.code === web_status.SUCCESS) { //处于选课中
+                    flag = true;
+                } else { //选课未开始 / 结束
+                    flag = false;
+                }
+            }
+        };
+        $.ajax(config);
+        console.log("flag: " + flag);
+        return flag;
+    }
 
     /** 选择课程 -- 判断是否会冲突已转移到choose.html中进行后端的判断, 此处仅做学分上限限制判断使用 + 跳转 */
     function choose(scheId) {

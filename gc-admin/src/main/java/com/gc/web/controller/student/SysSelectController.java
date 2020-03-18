@@ -6,8 +6,10 @@ import com.gc.common.core.page.TableDataInfo;
 import com.gc.framework.util.ShiroUtils;
 import com.gc.system.domain.GcSc;
 import com.gc.system.domain.GcSchedule;
+import com.gc.system.domain.GcTimeManage;
 import com.gc.system.service.GcSelectService;
 import com.gc.system.service.ISysTimeTableService;
+import com.gc.system.service.SysTimeManageService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,6 +18,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -35,6 +38,9 @@ public class SysSelectController extends BaseController {
     @Autowired
     private ISysTimeTableService iSysTimeTableService;
 
+    @Autowired
+    private SysTimeManageService manageService;
+
 
     /**
      * 获取选课入口页面
@@ -43,6 +49,24 @@ public class SysSelectController extends BaseController {
     @GetMapping()
     public String select() {
         return prefix + "/select";
+    }
+
+    /**
+     * 判断选课是否开始 / 结束
+     *
+     * @return com.gc.common.core.domain.AjaxResult
+     * @Param []
+     **/
+    @GetMapping("/isStartOrEnd")
+    @ResponseBody
+    public AjaxResult isStartOrEnd() {
+        Date now = new Date();
+        GcTimeManage manage = manageService.getManage();
+        if (now.getTime() >= manage.getStartTime().getTime() && now.getTime() <= manage.getEndTime().getTime()) {
+            return success();
+        } else {
+            return error();
+        }
     }
 
 
