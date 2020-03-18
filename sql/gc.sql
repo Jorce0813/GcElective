@@ -166,3 +166,17 @@ create table gc_sc_gjs(
 
 insert into gc_sc_gjs values(1, 2, 1, 1, '2020-02-13 16:07:35');
 insert into gc_sc_gjs values(2, 2, 2, 1, '2020-02-13 16:07:35');
+
+-- --------------------
+--8. 排课时间表
+-- --------------------
+drop table if exits gc_time_manage;
+create table gc_time_manage(
+    id              bigint(20)      not null auto_increment             comment 'ID',
+    start_time      datetime        not null                            comment '选课开始时间',
+    end_time        datetime        not null                            comment '选课结束时间',
+    draw_flag       int             not null                            comment '已选标志',
+    note            varchar(100)    default ''                          comment '备注',
+    update_time     datetime        not null default CURRENT_TIMESTAMP  comment '更新时间',
+    primary key (id)
+) engine=innodb auto_increment=1 charset=utf8 comment='排课时间表';
