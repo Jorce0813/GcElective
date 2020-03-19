@@ -29,7 +29,7 @@
             <ul class="nav" id="side-menu">
                 <a th:href="@{/index}">
                   <li class="logo">
-				    <span class="logo-lg" >RuoYi</span> 
+				    <span class="logo-lg" >广财选课系统</span>
             	  </li>
             	</a>
             	<li>
@@ -50,7 +50,9 @@
                 <li>
                     <a href="#"><i class="fa fa-home"></i> <span class="nav-label">主页</span> <span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
-                        <li><a class="menuItem" th:href="@{/system/main}">了解若依</a></li>
+                        <!--<li><a class="menuItem" th:href="@{/system/main}">了解若依</a></li>-->
+                        <li><a class="menuItem" href="" >信息门户</a></li>
+                        <li><a class="menuItem" href="http://jwxt.gdufe.edu.cn/jsxsd/">教务系统</a></li>
                     </ul>
                 </li>
                 <li th:each="menu : ${menus}">
@@ -181,8 +183,9 @@
                     </a>
                 </div>
                 <ul class="nav navbar-top-links navbar-right welcome-message">
-                    <li><a title="视频教程" href="http://doc.ruoyi.vip/ruoyi/document/spjc.html" target="_blank"><i class="fa fa-video-camera"></i> 视频教程</a></li>
-                    <li><a title="开发文档" href="http://doc.ruoyi.vip" target="_blank"><i class="fa fa-question-circle"></i> 开发文档</a></li>
+                    <!--<li><a title="视频教程" href="http://doc.ruoyi.vip/ruoyi/document/spjc.html" target="_blank"><i class="fa fa-video-camera"></i> 视频教程</a></li>-->
+                    <li><a title="GitHub源码" href="https://github.com/AwayFuture/GcElective" target="_blank"><i class="fa fa-github"></i> GitHub</a></li>
+                    <!--<li><a title="开发文档" href="http://doc.ruoyi.vip" target="_blank"><i class="fa fa-question-circle"></i> 开发文档</a></li>-->
 	                <li><a title="全屏显示" href="javascript:void(0)" id="fullScreen"><i class="fa fa-arrows-alt"></i> 全屏显示</a></li>
                     <li class="dropdown user-menu">
 						<a href="javascript:void(0)" class="dropdown-toggle" data-hover="dropdown">
@@ -230,11 +233,14 @@
         <a id="ax_close_max" class="ax_close_max" href="#" title="关闭全屏"> <i class="fa fa-times-circle-o"></i> </a>
                     
         <div class="row mainContent" id="content-main">
-            <iframe class="RuoYi_iframe" name="iframe0" width="100%" height="100%" data-id="/system/main"
-                    th:src="@{/system/main}" frameborder="0" seamless></iframe>
+            <!--<iframe class="RuoYi_iframe" name="iframe0" width="100%" height="100%" data-id="/system/main"
+                    th:src="@{/system/main}" frameborder="0" seamless></iframe>-->
+			<iframe class="RuoYi_iframe" name="iframe0" width="100%" height="100%" data-id="/system/main"
+					src="http://my.gdufe.edu.cn/" frameborder="0" seamless></iframe>
         </div>
         <div class="footer">
-            <div class="pull-right">© [[${copyrightYear}]] RuoYi Copyright </div>
+            <!--<div class="pull-right">© [[${copyrightYear}]] RuoYi Copyright </div>-->
+            <div class="pull-right">© [[${copyrightYear}]] Gdufe Copyright </div>
         </div>
     </div>
     <!--右侧部分结束-->
