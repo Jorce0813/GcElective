@@ -29,7 +29,7 @@
             <ul class="nav" id="side-menu">
                 <a th:href="@{/index}">
                   <li class="logo">
-				    <span class="logo-lg" >广财选课系统</span>
+				    <span class="logo-lg" >GDUFE 选课系统</span>
             	  </li>
             	</a>
             	<li>
@@ -56,7 +56,9 @@
                     </ul>
                 </li>
                 <li th:each="menu : ${menus}">
-                	<a th:class="@{${menu.url != '' && menu.url != '#'} ? ${menu.target}}" th:href="@{${menu.url == ''} ? |#| : ${menu.url}}">
+					<!-- hidden [系统管理] [系统监控] [系统工具] but它们的二级及以下的menu虽然没show出来但是会return给前端 -->
+                	<a th:if="${menu.menuName != '系统管理' && menu.menuName != '系统监控' && menu.menuName != '系统工具'}"
+					   th:class="@{${menu.url != '' && menu.url != '#'} ? ${menu.target}}" th:href="@{${menu.url == ''} ? |#| : ${menu.url}}">
                 		<i class="fa fa-bar-chart-o" th:class="${menu.icon}"></i>
                     	<span class="nav-label" th:text="${menu.menuName}">一级菜单</span> 
                     	<span th:class="${menu.url == '' || menu.url == '#'} ? |fa arrow|"></span>
@@ -77,7 +79,8 @@
 						</li>
 					</ul>
                 </li>
-                <li th:if="${demoEnabled}">
+                <!--<li th:if="${demoEnabled}">-->
+                <li th:if="0 == 1">
                     <a href="#"><i class="fa fa-desktop"></i><span class="nav-label">实例演示</span><span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level collapse">
                         <li> <a>表单<span class="fa arrow"></span></a>
@@ -240,7 +243,7 @@
         </div>
         <div class="footer">
             <!--<div class="pull-right">© [[${copyrightYear}]] RuoYi Copyright </div>-->
-            <div class="pull-right">© [[${copyrightYear}]] Gdufe Copyright </div>
+            <div class="pull-right">© [[${copyrightYear}]] GDUFE Copyright </div>
         </div>
     </div>
     <!--右侧部分结束-->
